@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "1.0",
+  "description": "The first structural failure aborts the whole changeset (transactional application)",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "travel-demo",
+    "profile": "L1",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "Assistant",
+        "description": "General assistant",
+        "prompt": "You are a helpful assistant."
+      },
+      {
+        "id": "travel",
+        "parentId": "root",
+        "title": "Travel",
+        "description": "Trips and itineraries",
+        "prompt": "Ask one clarifying question before recommending."
+      },
+      {
+        "id": "visa",
+        "parentId": "travel",
+        "title": "Visas",
+        "description": "Entry requirements"
+      },
+      {
+        "id": "code",
+        "parentId": "root",
+        "title": "Coding",
+        "description": "Programming questions",
+        "prompt": "Answer with runnable code first."
+      }
+    ]
+  },
+  "op": {
+    "kind": "applyChangeset",
+    "ops": [
+      {
+        "op": "updateNode",
+        "id": "ghost",
+        "patch": {
+          "title": "X"
+        }
+      }
+    ]
+  },
+  "expectError": "Changeset aborted at op 0"
+}

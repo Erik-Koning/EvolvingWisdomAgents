@@ -1,0 +1,29 @@
+{
+  "name": "adaptive-prompt-graph",
+  "version": "0.1.0",
+  "private": true,
+  "license": "UNLICENSED",
+  "description": "Adaptive Prompt Graph (APG) CLI: validate, outline, tree, route, compose, and walk *.apg.json templates.",
+  "type": "module",
+  "bin": {
+    "apg": "./dist/main.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "vitest run --passWithNoTests",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@apgraph/connectors": "workspace:*",
+    "@apgraph/core": "workspace:*",
+    "@apgraph/schema": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^3.0.0"
+  }
+}

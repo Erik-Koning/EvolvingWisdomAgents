@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Fallback resolution skips pruned nodes: the first live isFallback node wins",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "travel-demo",
+    "profile": "L3",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "Assistant",
+        "description": "General assistant",
+        "prompt": "You are a helpful assistant."
+      },
+      {
+        "id": "travel",
+        "parentId": "root",
+        "title": "Travel",
+        "description": "Trips and itineraries",
+        "prompt": "Ask one clarifying question before recommending."
+      },
+      {
+        "id": "visa",
+        "parentId": "travel",
+        "title": "Visas",
+        "description": "Entry requirements"
+      },
+      {
+        "id": "code",
+        "parentId": "root",
+        "title": "Coding",
+        "description": "Programming questions",
+        "prompt": "Answer with runnable code first."
+      },
+      {
+        "id": "misc1",
+        "parentId": "root",
+        "title": "Old catch-all",
+        "description": "pruned",
+        "isFallback": true,
+        "metadata": {
+          "status": "pruned"
+        }
+      },
+      {
+        "id": "misc2",
+        "parentId": "root",
+        "title": "Everything else",
+        "description": "Catch-all",
+        "isFallback": true
+      }
+    ]
+  },
+  "mocks": {
+    "classify": [
+      {
+        "matches": [
+          {
+            "nodeId": "travel",
+            "confidence": 0.3
+          }
+        ]
+      }
+    ]
+  },
+  "op": {
+    "kind": "route",
+    "query": "ummm"
+  },
+  "expected": {
+    "matches": [
+      {
+        "nodeId": "misc2",
+        "confidence": 0
+      }
+    ],
+    "fallbackUsed": true
+  }
+}

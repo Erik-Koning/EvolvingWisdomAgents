@@ -1,0 +1,44 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  ci-ts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: typescript/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+        working-directory: typescript
+      - run: pnpm -r build
+        working-directory: typescript
+      - run: pnpm -r test
+        working-directory: typescript
+
+  ci-py:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync
+        working-directory: python
+      - run: uv run pytest packages/apg-core/tests -q
+        working-directory: python
+
+  # Conformance parity: the same fixture files run inside both suites above.
+  # A fixture passing in one runtime and failing in the other fails this job.
+  conformance:
+    needs: [ci-ts, ci-py]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "both runtimes passed the shared fixture suite"

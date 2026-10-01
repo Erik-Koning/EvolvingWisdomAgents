@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://adaptive-prompt-graph.dev/schema/1/session.schema.json",
+  "title": "APG session state",
+  "type": "object",
+  "required": ["sessionId", "mode", "vars", "visited", "stepCount"],
+  "properties": {
+    "sessionId": { "type": "string" },
+    "mode": { "enum": ["routing", "walking", "awaitingHuman"] },
+    "currentNodeId": { "type": "string" },
+    "vars": { "type": "object" },
+    "visited": { "type": "object", "additionalProperties": { "type": "integer", "minimum": 0 } },
+    "pendingHuman": {
+      "type": "object",
+      "required": ["ticketId", "nodeId", "since"],
+      "properties": {
+        "ticketId": { "type": "string" },
+        "nodeId": { "type": "string" },
+        "since": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "stepCount": { "type": "integer", "minimum": 0 },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["at", "nodeId", "event"],
+        "properties": {
+          "at": { "type": "string" },
+          "nodeId": { "type": "string" },
+          "event": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

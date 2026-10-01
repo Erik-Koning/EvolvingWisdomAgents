@@ -1,0 +1,180 @@
+{
+  "schemaVersion": "1.0",
+  "description": "mergeNodes unions aliases/brings and rewrites references graph-wide; splitNode partitions take aliases as children",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "reshape",
+    "profile": "L3",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "R",
+        "description": "r"
+      },
+      {
+        "id": "a",
+        "parentId": "root",
+        "title": "A",
+        "description": "a",
+        "aliases": [
+          "alpha"
+        ],
+        "bring": [
+          "kb"
+        ]
+      },
+      {
+        "id": "b",
+        "parentId": "root",
+        "title": "Bee",
+        "description": "b",
+        "aliases": [
+          "beta"
+        ],
+        "bring": [
+          "kb2"
+        ]
+      },
+      {
+        "id": "kb",
+        "parentId": "root",
+        "title": "KB",
+        "description": "kb",
+        "routable": false
+      },
+      {
+        "id": "kb2",
+        "parentId": "root",
+        "title": "KB2",
+        "description": "kb2",
+        "routable": false
+      },
+      {
+        "id": "d",
+        "parentId": "root",
+        "type": "decision",
+        "title": "D",
+        "description": "d",
+        "decision": {
+          "question": "Q?",
+          "choices": [
+            {
+              "label": "Go",
+              "value": "go",
+              "next": "b"
+            }
+          ]
+        }
+      },
+      {
+        "id": "billing",
+        "parentId": "root",
+        "title": "Billing",
+        "description": "billing",
+        "aliases": [
+          "invoices",
+          "refunds",
+          "payments"
+        ]
+      }
+    ]
+  },
+  "op": {
+    "kind": "applyChangeset",
+    "ops": [
+      {
+        "op": "mergeNodes",
+        "ids": [
+          "b"
+        ],
+        "intoId": "a"
+      },
+      {
+        "op": "splitNode",
+        "id": "billing",
+        "partitions": [
+          {
+            "node": {
+              "id": "refunds",
+              "parentId": "billing",
+              "title": "Refunds",
+              "description": "Refund requests"
+            },
+            "takes": [
+              "refunds"
+            ]
+          },
+          {
+            "node": {
+              "id": "invoices",
+              "parentId": "billing",
+              "title": "Invoices",
+              "description": "Invoice copies"
+            },
+            "takes": [
+              "invoices"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "expected": {
+    "graph": {
+      "nodes": [
+        {
+          "id": "root"
+        },
+        {
+          "id": "a",
+          "aliases": [
+            "alpha",
+            "Bee",
+            "beta"
+          ],
+          "bring": [
+            "kb",
+            "kb2"
+          ]
+        },
+        {
+          "id": "kb"
+        },
+        {
+          "id": "kb2"
+        },
+        {
+          "id": "d",
+          "decision": {
+            "choices": [
+              {
+                "label": "Go",
+                "value": "go",
+                "next": "a"
+              }
+            ]
+          }
+        },
+        {
+          "id": "billing",
+          "aliases": [
+            "payments"
+          ]
+        },
+        {
+          "id": "refunds",
+          "aliases": [
+            "refunds"
+          ]
+        },
+        {
+          "id": "invoices",
+          "aliases": [
+            "invoices"
+          ]
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.0",
+  "description": "A require-mode escalation with missing collectBeforeHandoff vars elicits them before opening the ticket (never a silent stall)",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "esc-intake",
+    "profile": "L4",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "R",
+        "description": "r"
+      },
+      {
+        "id": "swelling",
+        "parentId": "root",
+        "title": "Battery swelling",
+        "description": "Safety critical",
+        "fillPolicy": "explicit",
+        "escalation": {
+          "mode": "require",
+          "queue": "safety",
+          "collectBeforeHandoff": [
+            {
+              "name": "frameNumber",
+              "required": true,
+              "elicitationPrompt": "What's the frame number?"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "op": {
+    "kind": "sessionStep",
+    "input": {
+      "kind": "enter",
+      "nodeId": "swelling"
+    }
+  },
+  "expected": {
+    "session": {
+      "mode": "walking",
+      "currentNodeId": "swelling",
+      "stepCount": 1
+    },
+    "effects": [
+      {
+        "kind": "elicit",
+        "nodeId": "swelling",
+        "variable": "frameNumber",
+        "prompt": "What's the frame number?"
+      }
+    ]
+  }
+}

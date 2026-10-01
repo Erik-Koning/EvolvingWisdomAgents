@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Props template into slots; leaf outputSchema wins; modelOverride merges leaf-wins; toolAllowlist intersects along the path",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "faq",
+    "profile": "L3",
+    "defaults": {
+      "routing": {
+        "descriptor": [
+          "props.question"
+        ]
+      },
+      "model": {
+        "temperature": 0.3
+      }
+    },
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "FAQ",
+        "description": "faq root",
+        "routable": false,
+        "toolAllowlist": [
+          "search",
+          "kb"
+        ]
+      },
+      {
+        "id": "faq1",
+        "parentId": "root",
+        "props": {
+          "question": "How do I reset my password?"
+        },
+        "prompt": {
+          "slots": {
+            "task": "Answer the FAQ: {{props.question}}"
+          }
+        },
+        "outputSchema": {
+          "type": "object",
+          "required": [
+            "answer"
+          ]
+        },
+        "modelOverride": {
+          "temperature": 0.1
+        },
+        "toolAllowlist": [
+          "kb",
+          "other"
+        ]
+      }
+    ]
+  },
+  "op": {
+    "kind": "compose",
+    "nodeId": "faq1"
+  },
+  "expected": {
+    "slots": {
+      "task": "Answer the FAQ: How do I reset my password?"
+    },
+    "outputSchema": {
+      "type": "object",
+      "required": [
+        "answer"
+      ]
+    },
+    "modelHints": {
+      "temperature": 0.1
+    },
+    "toolAllowlist": [
+      "kb"
+    ]
+  }
+}

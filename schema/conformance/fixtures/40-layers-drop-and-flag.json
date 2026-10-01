@@ -1,0 +1,115 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Layer ops that fail are dropped and flagged, never guessed; updateRoutingConfig is base-scope-only",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "travel-demo",
+    "profile": "L1",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "Assistant",
+        "description": "General assistant",
+        "prompt": "You are a helpful assistant."
+      },
+      {
+        "id": "travel",
+        "parentId": "root",
+        "title": "Travel",
+        "description": "Trips and itineraries",
+        "prompt": "Ask one clarifying question before recommending."
+      },
+      {
+        "id": "visa",
+        "parentId": "travel",
+        "title": "Visas",
+        "description": "Entry requirements"
+      },
+      {
+        "id": "code",
+        "parentId": "root",
+        "title": "Coding",
+        "description": "Programming questions",
+        "prompt": "Answer with runnable code first."
+      }
+    ],
+    "version": "2"
+  },
+  "op": {
+    "kind": "materializeLayers",
+    "layers": [
+      {
+        "layerId": "user:erik",
+        "baseGraphId": "travel-demo",
+        "baseVersion": "2",
+        "scope": "user",
+        "ownerId": "erik",
+        "version": "u3",
+        "ops": [
+          {
+            "op": "updateNode",
+            "id": "ghost",
+            "patch": {
+              "title": "X"
+            }
+          },
+          {
+            "op": "updateRoutingConfig",
+            "patch": {
+              "descriptor": [
+                "title"
+              ]
+            }
+          },
+          {
+            "op": "addNode",
+            "parentId": "root",
+            "node": {
+              "id": "mine",
+              "parentId": "root",
+              "title": "My node",
+              "description": "Personal"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "expected": {
+    "conflicts": [
+      {
+        "layerId": "user:erik",
+        "opIndex": 0,
+        "reason": "Unknown node id: ghost",
+        "droppedAt": "u3"
+      },
+      {
+        "layerId": "user:erik",
+        "opIndex": 1,
+        "reason": "updateRoutingConfig is a major change allowed on base scope only",
+        "droppedAt": "u3"
+      }
+    ],
+    "graph": {
+      "nodes": [
+        {
+          "id": "root"
+        },
+        {
+          "id": "travel"
+        },
+        {
+          "id": "visa"
+        },
+        {
+          "id": "code"
+        },
+        {
+          "id": "mine",
+          "title": "My node"
+        }
+      ]
+    }
+  }
+}

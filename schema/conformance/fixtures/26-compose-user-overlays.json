@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Stage-3 user overlays append contextOnly, ancestors first — personalization without mutating shared state",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "overlay",
+    "profile": "L1",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "R",
+        "description": "r",
+        "prompt": "Root."
+      },
+      {
+        "id": "billing",
+        "parentId": "root",
+        "title": "Billing",
+        "description": "billing",
+        "prompt": "Billing."
+      }
+    ]
+  },
+  "userOverlays": [
+    {
+      "userId": "u1",
+      "nodeId": "billing",
+      "digest": {
+        "constraints": "Keep answers short; state refund amounts upfront."
+      },
+      "evidence": {
+        "feedbackCount": 3,
+        "lastAt": "2026-07-01"
+      },
+      "version": "1"
+    },
+    {
+      "userId": "u1",
+      "nodeId": "root",
+      "digest": {
+        "constraints": "User prefers French."
+      },
+      "evidence": {
+        "feedbackCount": 1,
+        "lastAt": "2026-07-01"
+      },
+      "version": "1"
+    }
+  ],
+  "op": {
+    "kind": "compose",
+    "nodeId": "billing"
+  },
+  "expected": {
+    "slots": {
+      "task": "Root.\n\nBilling.",
+      "constraints": "User prefers French.\n\nKeep answers short; state refund amounts upfront."
+    },
+    "text": "Root.\n\nBilling.\n\nUser prefers French.\n\nKeep answers short; state refund amounts upfront."
+  }
+}

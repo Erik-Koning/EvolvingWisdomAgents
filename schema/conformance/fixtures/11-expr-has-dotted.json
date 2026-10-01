@@ -1,0 +1,16 @@
+{
+  "schemaVersion": "1.0",
+  "description": "has() checks dotted-path presence (non-null); missing identifiers resolve to null",
+  "op": {
+    "kind": "evalExpr",
+    "expr": "has(user.name) && missing == null",
+    "vars": {
+      "user": {
+        "name": "erik"
+      }
+    }
+  },
+  "expected": {
+    "value": true
+  }
+}

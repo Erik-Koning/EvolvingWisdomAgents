@@ -1,0 +1,45 @@
+{
+  "schemaVersion": "1.0",
+  "description": "A graph-declared routing descriptor over props.* changes the outline vocabulary; unrendered ancestors do not indent",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "faq",
+    "profile": "L1",
+    "defaults": {
+      "routing": {
+        "descriptor": [
+          "props.question"
+        ]
+      }
+    },
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "FAQ",
+        "description": "faq root",
+        "routable": false
+      },
+      {
+        "id": "faq1",
+        "parentId": "root",
+        "props": {
+          "question": "How do I reset my password?"
+        }
+      },
+      {
+        "id": "faq2",
+        "parentId": "root",
+        "props": {
+          "question": "How do I close my account?"
+        }
+      }
+    ]
+  },
+  "op": {
+    "kind": "serializeOutline"
+  },
+  "expected": {
+    "outline": "faq1: How do I reset my password?\nfaq2: How do I close my account?"
+  }
+}

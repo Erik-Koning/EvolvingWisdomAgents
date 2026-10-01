@@ -1,0 +1,264 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://adaptive-prompt-graph.dev/schema/1/changeset.schema.json",
+  "title": "APG mutation algebra: MutationOp, Changeset, GraphLayer",
+  "$defs": {
+    "MutationOp": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["op", "parentId", "node"],
+          "properties": {
+            "op": { "const": "addNode" },
+            "parentId": { "type": "string" },
+            "node": { "type": "object" },
+            "position": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["op", "id", "patch"],
+          "properties": {
+            "op": { "const": "updateNode" },
+            "id": { "type": "string" },
+            "patch": { "type": "object", "description": "Deep-merge; null deletes a key; arrays replace wholesale." }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["op", "id", "newParentId"],
+          "properties": {
+            "op": { "const": "moveNode" },
+            "id": { "type": "string" },
+            "newParentId": { "type": "string" },
+            "position": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["op", "id", "orphans"],
+          "properties": {
+            "op": { "const": "deleteNode" },
+            "id": { "type": "string" },
+            "orphans": { "enum": ["cascade", "reparent"] },
+            "force": { "type": "boolean", "description": "Override pinned protection." }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["op", "id"],
+          "properties": {
+            "op": { "const": "pruneSubtree" },
+            "id": { "type": "string" },
+            "force": { "type": "boolean", "description": "Override pinned protection." }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["op", "parentId", "nodes"],
+          "properties": {
+            "op": { "const": "graftSubtree" },
+            "parentId": { "type": "string" },
+            "nodes": { "type": "array", "items": { "type": "object" } }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["op", "ids", "intoId"],
+          "properties": {
+            "op": { "const": "mergeNodes" },
+            "ids": { "type": "array", "items": { "type": "string" } },
+            "intoId": { "type": "string" },
+            "force": { "type": "boolean", "description": "Override pinned protection on merged (absorbed) nodes." }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["op", "id", "partitions"],
+          "properties": {
+            "op": { "const": "splitNode" },
+            "id": { "type": "string" },
+            "partitions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["node", "takes"],
+                "properties": {
+                  "node": { "type": "object" },
+                  "takes": { "type": "array", "items": { "type": "string" } }
+                },
+                "additionalProperties": false
+              }
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["op", "parentId", "order"],
+          "properties": {
+            "op": { "const": "reorderChildren" },
+            "parentId": { "type": "string" },
+            "order": { "type": "array", "items": { "type": "string" } }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["op", "id", "bring"],
+          "properties": {
+            "op": { "const": "setBring" },
+            "id": { "type": "string" },
+            "bring": { "type": "array", "items": { "type": "string" } },
+            "recursiveBring": { "type": "boolean" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["op", "decisionId", "choice"],
+          "properties": {
+            "op": { "const": "linkChoice" },
+            "decisionId": { "type": "string" },
+            "choice": {
+              "type": "object",
+              "required": ["label", "value", "next"],
+              "properties": {
+                "label": { "type": "string" },
+                "value": { "type": "string" },
+                "next": { "type": "string" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["op", "decisionId", "value"],
+          "properties": {
+            "op": { "const": "unlinkChoice" },
+            "decisionId": { "type": "string" },
+            "value": { "type": "string" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["op", "edge"],
+          "properties": {
+            "op": { "const": "setEdge" },
+            "edge": { "$ref": "apg.schema.json#/$defs/Edge" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["op", "edge"],
+          "properties": {
+            "op": { "const": "removeEdge" },
+            "edge": { "$ref": "apg.schema.json#/$defs/Edge" }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["op", "patch"],
+          "properties": {
+            "op": { "const": "updateGraphConfig" },
+            "patch": {
+              "type": "object",
+              "properties": {
+                "defaults": { "type": "object" },
+                "variables": { "type": "array" },
+                "meta": { "type": "object" }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["op", "patch"],
+          "properties": {
+            "op": { "const": "updateRoutingConfig" },
+            "patch": {
+              "type": "object",
+              "properties": {
+                "descriptor": { "type": "array", "items": { "type": "string" } },
+                "embedText": { "type": "array", "items": { "type": "string" } }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false,
+          "description": "MAJOR change: graph-version bump, full re-embed, full routing regression. Base scope only."
+        }
+      ]
+    },
+    "Changeset": {
+      "type": "object",
+      "required": ["id", "baseGraphVersion", "ops", "status", "createdBy"],
+      "properties": {
+        "id": { "type": "string" },
+        "baseGraphVersion": { "type": "string" },
+        "ops": { "type": "array", "items": { "$ref": "#/$defs/MutationOp" } },
+        "status": { "enum": ["draft", "validated", "approved", "committed", "discarded"] },
+        "createdBy": { "type": "string" },
+        "validation": { "type": "object" },
+        "regression": { "type": "object" },
+        "evidence": { "type": "array", "items": { "$ref": "#/$defs/OpEvidence" } },
+        "meta": { "type": "object" },
+        "createdAt": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "OpEvidence": {
+      "type": "object",
+      "required": ["opIndex", "quote", "transcriptId", "turnIndex"],
+      "properties": {
+        "opIndex": { "type": "integer", "minimum": 0 },
+        "quote": { "type": "string", "minLength": 1 },
+        "transcriptId": { "type": "string" },
+        "turnIndex": { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false,
+      "description": "Citation backing a degrading op: quote must appear (whitespace-normalized) in the cited USER turn."
+    },
+    "GraphLayer": {
+      "type": "object",
+      "required": ["layerId", "baseGraphId", "baseVersion", "scope", "ownerId", "ops", "version"],
+      "properties": {
+        "layerId": { "type": "string" },
+        "baseGraphId": { "type": "string" },
+        "baseVersion": { "type": "string" },
+        "scope": { "enum": ["tenant", "user", "session"] },
+        "ownerId": { "type": "string" },
+        "ops": { "type": "array", "items": { "$ref": "#/$defs/MutationOp" } },
+        "version": { "type": "string" },
+        "conflicts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["opIndex", "reason", "droppedAt"],
+            "properties": {
+              "opIndex": { "type": "integer" },
+              "reason": { "type": "string" },
+              "droppedAt": { "type": "string" }
+            },
+            "additionalProperties": false
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Explicit fill: a required collect var elicits, then consumes the raw user reply; a satisfied category exits to composition",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "intake",
+    "profile": "L2",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "R",
+        "description": "r"
+      },
+      {
+        "id": "quote",
+        "parentId": "root",
+        "title": "Quote",
+        "description": "Get a quote",
+        "fillPolicy": "explicit",
+        "collect": [
+          {
+            "name": "email",
+            "required": true,
+            "elicitationPrompt": "What's your email?"
+          }
+        ]
+      }
+    ]
+  },
+  "session": {
+    "sessionId": "s",
+    "mode": "walking",
+    "currentNodeId": "quote",
+    "vars": {},
+    "visited": {
+      "quote": 1
+    },
+    "stepCount": 1
+  },
+  "op": {
+    "kind": "sessionStep",
+    "input": {
+      "kind": "user",
+      "text": "erik@example.com"
+    }
+  },
+  "expected": {
+    "session": {
+      "mode": "routing",
+      "currentNodeId": "quote",
+      "vars": {
+        "email": "erik@example.com"
+      }
+    },
+    "effects": [
+      {
+        "kind": "composeReady",
+        "nodeId": "quote"
+      }
+    ]
+  }
+}

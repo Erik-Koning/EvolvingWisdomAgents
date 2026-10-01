@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0",
+  "description": "The routing-regression harness: labeled queries evaluate in input order, pass = expected within top-K, fallback never passes, and failures won by focus nodes are traffic-steal",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "travel-demo",
+    "profile": "L0",
+    "nodes": [
+      { "id": "root", "parentId": null, "title": "Assistant", "description": "General assistant",
+        "prompt": "You are a helpful assistant." },
+      { "id": "travel", "parentId": "root", "title": "Travel", "description": "Trips and itineraries" },
+      { "id": "visa", "parentId": "travel", "title": "Visas", "description": "Entry requirements" },
+      { "id": "code", "parentId": "root", "title": "Coding", "description": "Programming questions" },
+      { "id": "newbie", "parentId": "root", "title": "New arrivals", "description": "A freshly added category" }
+    ]
+  },
+  "mocks": {
+    "classify": [
+      { "matches": [{ "nodeId": "travel", "confidence": 0.9 }] },
+      { "matches": [{ "nodeId": "travel", "confidence": 0.8 }] },
+      { "matches": [{ "nodeId": "newbie", "confidence": 0.9 }] }
+    ]
+  },
+  "op": {
+    "kind": "evalRouting",
+    "labeled": [
+      { "query": "plan me a trip", "expected": "travel" },
+      { "query": "fix my python bug", "expected": "code" },
+      { "query": "do I need a visa", "expected": "visa" }
+    ],
+    "focusNodes": ["newbie"]
+  },
+  "expected": {
+    "total": 3,
+    "passed": 1,
+    "failed": [
+      { "query": "fix my python bug", "expected": "code", "got": "travel", "confidence": 0.8 },
+      { "query": "do I need a visa", "expected": "visa", "got": "newbie", "confidence": 0.9 }
+    ],
+    "stolen": [
+      { "query": "do I need a visa", "expected": "visa", "stolenBy": "newbie" }
+    ]
+  }
+}

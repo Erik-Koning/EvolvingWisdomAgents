@@ -1,0 +1,98 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Embedding pre-filter keeps top-K by cosine; shortlist preserves DFS order",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "helpdesk",
+    "profile": "L1",
+    "defaults": {
+      "routing": {
+        "shortlistK": 2
+      }
+    },
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "Helpdesk",
+        "description": "root",
+        "routable": false
+      },
+      {
+        "id": "a1",
+        "parentId": "root",
+        "title": "Password reset",
+        "description": "Reset your password"
+      },
+      {
+        "id": "a2",
+        "parentId": "root",
+        "title": "Billing",
+        "description": "Invoices and refunds"
+      },
+      {
+        "id": "a3",
+        "parentId": "root",
+        "title": "Shipping",
+        "description": "Delivery times"
+      },
+      {
+        "id": "a4",
+        "parentId": "root",
+        "title": "Returns",
+        "description": "Return a package"
+      }
+    ]
+  },
+  "mocks": {
+    "embeddings": {
+      "reset password": [
+        1,
+        0
+      ],
+      "Password reset — Reset your password": [
+        1,
+        0
+      ],
+      "Billing — Invoices and refunds": [
+        0.9,
+        0.1
+      ],
+      "Shipping — Delivery times": [
+        0,
+        1
+      ],
+      "Returns — Return a package": [
+        0.5,
+        0.5
+      ]
+    },
+    "classify": [
+      {
+        "matches": [
+          {
+            "nodeId": "a1",
+            "confidence": 0.95
+          }
+        ]
+      }
+    ]
+  },
+  "op": {
+    "kind": "route",
+    "query": "reset password"
+  },
+  "expected": {
+    "matches": [
+      {
+        "nodeId": "a1",
+        "confidence": 0.95
+      }
+    ],
+    "shortlist": [
+      "a1",
+      "a2"
+    ],
+    "fallbackUsed": false
+  }
+}

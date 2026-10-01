@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "1.0",
+  "description": "A pinned node aborts removal ops (deleteNode here; mergeNodes/pruneSubtree share the guard) — learned items are protected by library invariant",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "pinned",
+    "profile": "L1",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "R",
+        "description": "r"
+      },
+      {
+        "id": "cat",
+        "parentId": "root",
+        "title": "Cat",
+        "description": "c"
+      },
+      {
+        "id": "p",
+        "parentId": "cat",
+        "title": "P",
+        "description": "keep me",
+        "pinned": true
+      },
+      {
+        "id": "loose",
+        "parentId": "cat",
+        "title": "Loose",
+        "description": "l"
+      }
+    ]
+  },
+  "op": {
+    "kind": "applyChangeset",
+    "ops": [
+      {
+        "op": "deleteNode",
+        "id": "p",
+        "orphans": "cascade"
+      }
+    ]
+  },
+  "expectError": "is pinned"
+}

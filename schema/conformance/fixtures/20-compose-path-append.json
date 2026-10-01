@@ -1,0 +1,50 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Root-to-leaf slot merge, default append: L0 composition",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "travel-demo",
+    "profile": "L0",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "Assistant",
+        "description": "General assistant",
+        "prompt": "You are a helpful assistant."
+      },
+      {
+        "id": "travel",
+        "parentId": "root",
+        "title": "Travel",
+        "description": "Trips and itineraries",
+        "prompt": "Ask one clarifying question before recommending."
+      },
+      {
+        "id": "visa",
+        "parentId": "travel",
+        "title": "Visas",
+        "description": "Entry requirements"
+      },
+      {
+        "id": "code",
+        "parentId": "root",
+        "title": "Coding",
+        "description": "Programming questions",
+        "prompt": "Answer with runnable code first."
+      }
+    ]
+  },
+  "op": {
+    "kind": "compose",
+    "nodeId": "travel"
+  },
+  "expected": {
+    "slots": {
+      "task": "You are a helpful assistant.\n\nAsk one clarifying question before recommending."
+    },
+    "text": "You are a helpful assistant.\n\nAsk one clarifying question before recommending.",
+    "truncated": [],
+    "unresolved": []
+  }
+}

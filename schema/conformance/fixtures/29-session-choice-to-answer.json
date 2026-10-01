@@ -1,0 +1,153 @@
+{
+  "schemaVersion": "1.0",
+  "description": "A choice input saves saveAs, follows the flow edge, and the answer terminal says + completes the walk",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "support-demo",
+    "profile": "L4",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "Support",
+        "description": "Device support"
+      },
+      {
+        "id": "diag",
+        "parentId": "root",
+        "type": "decision",
+        "title": "Diagnose",
+        "description": "Power-on triage",
+        "decision": {
+          "question": "Does the device power on?",
+          "saveAs": "powersOn",
+          "choices": [
+            {
+              "label": "Yes",
+              "value": "yes",
+              "next": "ask2"
+            },
+            {
+              "label": "No",
+              "value": "no",
+              "next": "plug"
+            }
+          ]
+        }
+      },
+      {
+        "id": "plug",
+        "parentId": "diag",
+        "type": "answer",
+        "title": "Charge it",
+        "description": "Charging fix",
+        "prompt": "Plug in the charger for 30 minutes, then retry."
+      },
+      {
+        "id": "ask2",
+        "parentId": "diag",
+        "type": "decision",
+        "title": "Screen check",
+        "description": "Screen triage",
+        "decision": {
+          "question": "Is the screen cracked?",
+          "saveAs": "cracked",
+          "choices": [
+            {
+              "label": "Yes",
+              "value": "yes",
+              "next": "repair"
+            },
+            {
+              "label": "No",
+              "value": "no",
+              "next": "reset"
+            }
+          ]
+        }
+      },
+      {
+        "id": "repair",
+        "parentId": "ask2",
+        "type": "action",
+        "title": "Repair ticket",
+        "description": "Open repair",
+        "action": {
+          "tool": "createRepairTicket",
+          "argsFromVars": [
+            "powersOn"
+          ],
+          "onSuccess": "done",
+          "onError": "handoff",
+          "saveResultAs": "ticket"
+        }
+      },
+      {
+        "id": "done",
+        "parentId": "repair",
+        "type": "answer",
+        "title": "Done",
+        "description": "Ticket confirmation",
+        "prompt": "Repair ticket {{ticket.id}} created."
+      },
+      {
+        "id": "handoff",
+        "parentId": "repair",
+        "title": "Human handoff",
+        "description": "Escalate to a human",
+        "escalation": {
+          "mode": "require",
+          "queue": "support",
+          "resumeNode": "reset"
+        }
+      },
+      {
+        "id": "reset",
+        "parentId": "ask2",
+        "type": "answer",
+        "title": "Reset",
+        "description": "Soft reset steps",
+        "prompt": "Hold power for 10 seconds."
+      }
+    ]
+  },
+  "session": {
+    "sessionId": "s",
+    "mode": "walking",
+    "currentNodeId": "diag",
+    "vars": {},
+    "visited": {
+      "diag": 1
+    },
+    "stepCount": 1
+  },
+  "op": {
+    "kind": "sessionStep",
+    "input": {
+      "kind": "choice",
+      "value": "no"
+    }
+  },
+  "expected": {
+    "session": {
+      "mode": "routing",
+      "vars": {
+        "powersOn": "no"
+      },
+      "visited": {
+        "diag": 1,
+        "plug": 1
+      }
+    },
+    "effects": [
+      {
+        "kind": "say",
+        "nodeId": "plug",
+        "text": "Plug in the charger for 30 minutes, then retry."
+      },
+      {
+        "kind": "walkComplete"
+      }
+    ]
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Duplicate classifier matches dedupe by nodeId keeping the highest confidence",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "travel-demo",
+    "profile": "L0",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "Assistant",
+        "description": "General assistant",
+        "prompt": "You are a helpful assistant."
+      },
+      {
+        "id": "travel",
+        "parentId": "root",
+        "title": "Travel",
+        "description": "Trips and itineraries",
+        "prompt": "Ask one clarifying question before recommending."
+      },
+      {
+        "id": "visa",
+        "parentId": "travel",
+        "title": "Visas",
+        "description": "Entry requirements"
+      },
+      {
+        "id": "code",
+        "parentId": "root",
+        "title": "Coding",
+        "description": "Programming questions",
+        "prompt": "Answer with runnable code first."
+      }
+    ]
+  },
+  "mocks": {
+    "classify": [
+      {
+        "matches": [
+          {
+            "nodeId": "travel",
+            "confidence": 0.7
+          },
+          {
+            "nodeId": "travel",
+            "confidence": 0.9
+          },
+          {
+            "nodeId": "code",
+            "confidence": 0.6
+          }
+        ]
+      }
+    ]
+  },
+  "op": {
+    "kind": "route",
+    "query": "trip with some coding"
+  },
+  "expected": {
+    "matches": [
+      {
+        "nodeId": "travel",
+        "confidence": 0.9
+      },
+      {
+        "nodeId": "code",
+        "confidence": 0.6
+      }
+    ],
+    "strategy": "multi",
+    "fallbackUsed": false
+  }
+}

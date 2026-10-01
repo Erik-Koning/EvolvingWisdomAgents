@@ -1,0 +1,122 @@
+{
+  "$schema": "https://adaptive-prompt-graph.dev/schema/1/apg.schema.json",
+  "schemaVersion": "1.0",
+  "graphId": "ridemate-support",
+  "version": "2026.07.09-1",
+  "profile": "L4",
+  "meta": { "title": "RideMate support", "tenantId": "ridemate", "tags": ["support", "l4"] },
+  "defaults": {
+    "composition": { "defaultMode": "append", "mode": { "constraints": "merge", "persona": "override", "outputFormat": "override" } },
+    "routing": { "minConfidence": 0.55, "allowMulti": true, "shortlistK": 12 },
+    "budget": { "maxPromptTokens": 6000 },
+    "model": { "temperature": 0.3 }
+  },
+  "connectors": {
+    "llm": { "use": "anthropic", "config": { "model": "claude-sonnet-4-6" } },
+    "embeddings": { "use": "openai", "config": { "model": "text-embedding-3-small" } },
+    "store": { "use": "file" },
+    "session": { "use": "memory" },
+    "tools": { "use": "mcp-client", "config": { "servers": ["ridemate-ops"] } },
+    "handoff": { "use": "webhook", "config": { "url": "https://ops.example/tickets" } },
+    "telemetry": { "use": "otel" }
+  },
+  "variables": [{ "name": "brandName", "required": true, "default": "RideMate", "source": "tenant" }],
+  "nodes": [
+    {
+      "id": "root",
+      "parentId": null,
+      "title": "RideMate support",
+      "description": "Support for RideMate e-bikes and the RideMate app",
+      "prompt": {
+        "slots": {
+          "persona": "You are {{brandName}} support: direct, technically competent, never saccharine.",
+          "constraints": "Never promise refunds or repairs you cannot verify. Cite policy nodes when you rely on them."
+        }
+      },
+      "bring": ["policy-safety"]
+    },
+    {
+      "id": "policy-safety",
+      "parentId": "root",
+      "slug": "policy-safety",
+      "title": "Safety policy",
+      "description": "Non-negotiable safety guidance",
+      "routable": false,
+      "prompt": {
+        "slots": {
+          "constraints": "Any brake, battery-swelling, or overheating report must be escalated; do not offer DIY fixes for those."
+        }
+      }
+    },
+    {
+      "id": "battery",
+      "parentId": "root",
+      "slug": "battery",
+      "title": "Battery & charging",
+      "description": "Range, charging, battery health",
+      "aliases": ["won't charge", "range dropped"],
+      "prompt": "Diagnose battery issues. Ask for the charge-cycle count from the app before recommending replacement.",
+      "escalation": {
+        "mode": "suggest",
+        "queue": "hardware",
+        "escalateBelowConfidence": 0.4
+      }
+    },
+    {
+      "id": "battery-swelling",
+      "parentId": "battery",
+      "slug": "swelling",
+      "title": "Battery swelling",
+      "description": "Swollen, hot, or smoking battery — safety critical",
+      "escalation": {
+        "mode": "require",
+        "queue": "safety",
+        "sla": { "firstResponseMins": 15 },
+        "collectBeforeHandoff": [
+          { "name": "frameNumber", "required": true, "elicitationPrompt": "What's the frame number (under the bottom bracket)?" },
+          { "name": "batteryState", "required": true, "elicitationPrompt": "Is the battery currently indoors, and does it feel hot?" }
+        ],
+        "resumeNode": "battery-swelling-resume"
+      }
+    },
+    {
+      "id": "battery-swelling-resume",
+      "parentId": "battery-swelling",
+      "slug": "resume",
+      "type": "answer",
+      "title": "Post-handoff safety recap",
+      "description": "What to do while waiting for the safety team",
+      "routable": false,
+      "prompt": "A safety specialist has your case. Until they reach you: keep the battery outdoors away from anything flammable, and do not charge it."
+    },
+    {
+      "id": "orders",
+      "parentId": "root",
+      "slug": "orders",
+      "title": "Orders & delivery",
+      "description": "Order status, delivery windows, cancellations",
+      "prompt": "Resolve order questions. Use the order-lookup tool rather than guessing dates.",
+      "toolAllowlist": ["orderLookup"],
+      "escalation": { "mode": "draft", "queue": "logistics" }
+    },
+    {
+      "id": "app",
+      "parentId": "root",
+      "slug": "app",
+      "title": "App & connectivity",
+      "description": "Pairing, firmware updates, app crashes",
+      "aliases": ["bluetooth", "won't pair"],
+      "prompt": "Walk through pairing/firmware fixes stepwise; one step per message."
+    },
+    {
+      "id": "misc",
+      "parentId": "root",
+      "slug": "misc",
+      "title": "Everything else",
+      "description": "Anything that fits no category",
+      "isFallback": true,
+      "prompt": "Answer helpfully; log the query as a category gap candidate.",
+      "escalation": { "mode": "suggest", "queue": "general" }
+    }
+  ]
+}

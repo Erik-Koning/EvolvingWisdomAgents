@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1.0",
+  "description": "embedBypass declines on ambiguity: when the top-2 similarity margin is below minMargin, routing falls through to the normal classify path (the mock IS consumed) — the fast path never guesses between close candidates",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "bypass-declined",
+    "profile": "L1",
+    "defaults": { "routing": { "embedBypass": { "minSimilarity": 0.6, "minMargin": 0.2 } } },
+    "nodes": [
+      { "id": "root", "parentId": null, "title": "Assistant", "description": "root", "routable": false },
+      { "id": "travel", "parentId": "root", "title": "Travel", "description": "Trips and itineraries",
+        "embedding": [1, 0] },
+      { "id": "billing", "parentId": "root", "title": "Billing", "description": "Invoices and refunds",
+        "embedding": [0, 1] }
+    ]
+  },
+  "mocks": {
+    "embeddings": {
+      "refund my trip": [0.7071, 0.7071]
+    },
+    "classify": [{ "matches": [{ "nodeId": "billing", "confidence": 0.85 }] }]
+  },
+  "op": { "kind": "route", "query": "refund my trip" },
+  "expected": {
+    "matches": [{ "nodeId": "billing", "confidence": 0.85 }],
+    "fallbackUsed": false
+  }
+}

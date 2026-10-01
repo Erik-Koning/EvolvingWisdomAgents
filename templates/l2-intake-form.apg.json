@@ -1,0 +1,63 @@
+{
+  "$schema": "https://adaptive-prompt-graph.dev/schema/1/apg.schema.json",
+  "schemaVersion": "1.0",
+  "graphId": "moving-quote-intake",
+  "version": "1",
+  "profile": "L2",
+  "meta": { "title": "Branching intake questionnaire", "tags": ["demo", "l2"] },
+  "connectors": { "llm": { "use": "anthropic" }, "session": { "use": "memory" } },
+  "nodes": [
+    {
+      "id": "root",
+      "parentId": null,
+      "title": "Moving quotes",
+      "description": "Get a moving quote",
+      "prompt": "You collect the details needed for an accurate moving quote. One question at a time."
+    },
+    {
+      "id": "quote",
+      "parentId": "root",
+      "slug": "quote",
+      "title": "Quote intake",
+      "description": "Collect move details for a quote",
+      "fillPolicy": "opportunistic",
+      "collect": [
+        { "name": "fromCity", "required": true, "elicitationPrompt": "Where are you moving from?" },
+        { "name": "toCity", "required": true, "elicitationPrompt": "Where are you moving to?" },
+        {
+          "name": "bedrooms",
+          "required": true,
+          "schema": { "type": "integer" },
+          "elicitationPrompt": "How many bedrooms?"
+        },
+        { "name": "moveDate", "required": false, "elicitationPrompt": "Rough move date?" }
+      ],
+      "exitCondition": "has(fromCity) && has(toCity) && has(bedrooms)",
+      "visitPolicy": "loopUntilValid",
+      "outputSchema": {
+        "type": "object",
+        "required": ["quoteLow", "quoteHigh"],
+        "properties": {
+          "quoteLow": { "type": "number" },
+          "quoteHigh": { "type": "number" },
+          "notes": { "type": "string" }
+        }
+      },
+      "prompt": {
+        "slots": {
+          "task": "Produce a quote range for a {{bedrooms}}-bedroom move from {{fromCity}} to {{toCity}}.",
+          "outputFormat": "Return JSON matching the output schema."
+        }
+      }
+    },
+    {
+      "id": "long-distance",
+      "parentId": "quote",
+      "slug": "long-distance",
+      "title": "Long distance",
+      "description": "Interprovincial and cross-border moves",
+      "entryCondition": "has(fromCity) && has(toCity)",
+      "prompt": "Flag customs/border paperwork when the move crosses a border."
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "1.0",
+  "description": "visitPolicy 'once': a revisit via flow edges diverts to the nearest fallback or ends the walk",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "once",
+    "profile": "L3",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "R",
+        "description": "r"
+      },
+      {
+        "id": "d1",
+        "parentId": "root",
+        "type": "decision",
+        "title": "D1",
+        "description": "asks once",
+        "visitPolicy": "once",
+        "decision": {
+          "question": "Try again?",
+          "choices": [
+            {
+              "label": "Again",
+              "value": "again",
+              "next": "d1"
+            },
+            {
+              "label": "Done",
+              "value": "done",
+              "next": "fin"
+            }
+          ]
+        }
+      },
+      {
+        "id": "fin",
+        "parentId": "d1",
+        "type": "answer",
+        "title": "Fin",
+        "description": "terminal",
+        "prompt": "All done."
+      }
+    ]
+  },
+  "session": {
+    "sessionId": "s",
+    "mode": "walking",
+    "currentNodeId": "d1",
+    "vars": {},
+    "visited": {
+      "d1": 1
+    },
+    "stepCount": 1
+  },
+  "op": {
+    "kind": "sessionStep",
+    "input": {
+      "kind": "choice",
+      "value": "again"
+    }
+  },
+  "expected": {
+    "session": {
+      "mode": "routing",
+      "visited": {
+        "d1": 2
+      }
+    },
+    "effects": [
+      {
+        "kind": "walkComplete"
+      }
+    ]
+  }
+}

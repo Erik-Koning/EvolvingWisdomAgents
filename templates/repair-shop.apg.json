@@ -1,0 +1,123 @@
+{
+  "$schema": "https://adaptive-prompt-graph.dev/schema/1/apg.schema.json",
+  "schemaVersion": "1.0",
+  "graphId": "repair-shop",
+  "version": "1",
+  "profile": "L3",
+  "meta": {
+    "title": "Bayside Small Engine Repair — feedback-tuned front desk agent",
+    "tags": ["demo", "feedback", "langgraph"],
+    "regression": [
+      { "query": "how much would a new impeller cost installed", "expected": "quotes" },
+      { "query": "my outboard cranks but won't fire", "expected": "diagnostics" },
+      { "query": "when can I drop the boat off", "expected": "scheduling" },
+      { "query": "answer me in shorter messages", "expected": "style" },
+      { "query": "stop checking the weather every time", "expected": "tool-usage" }
+    ]
+  },
+  "defaults": {
+    "routing": {
+      "descriptor": ["title", "props.learn"],
+      "minConfidence": 0.55,
+      "allowMulti": true
+    }
+  },
+  "connectors": {
+    "llm": { "use": "anthropic" },
+    "store": { "use": "file" }
+  },
+  "nodes": [
+    {
+      "id": "shop",
+      "parentId": null,
+      "title": "Bayside Small Engine Repair",
+      "description": "Front desk agent for a small engine and outboard repair shop",
+      "routable": false,
+      "toolAllowlist": ["partsCost", "laborRate", "weather", "boatManufacturers"],
+      "bring": ["style", "tool-usage", "shop-facts"],
+      "recursiveBring": true,
+      "maxBringDepth": 3,
+      "prompt": {
+        "slots": {
+          "persona": "You are the front desk of Bayside Small Engine Repair — outboards, mowers, generators, pumps. Plain-spoken, practical, never an upsell. You use your tools for real numbers instead of guessing.",
+          "constraints": "Quotes are estimates until a tech looks at the machine — say so. If a job is dangerous for a customer to DIY (fuel systems, flywheels under load), say that plainly.",
+          "task": "Help the customer figure out what's wrong, what it costs, and when we can look at it."
+        }
+      }
+    },
+    {
+      "id": "quotes",
+      "parentId": "shop",
+      "slug": "quotes",
+      "title": "Quotes & estimates",
+      "props": {
+        "learn": "How this customer wants estimates presented: level of detail, parts vs labor breakdown, ranges vs firm numbers."
+      },
+      "prompt": {
+        "slots": {
+          "task": "When quoting: look up real parts and labor numbers with your tools, give a range, and note what could move the price."
+        }
+      }
+    },
+    {
+      "id": "diagnostics",
+      "parentId": "shop",
+      "slug": "diagnostics",
+      "title": "Diagnostics",
+      "props": {
+        "learn": "How this customer wants troubleshooting handled: step-by-step vs straight to the likely cause, how much explanation."
+      },
+      "prompt": {
+        "slots": {
+          "task": "Triage symptoms toward a likely cause before quoting. Ask one question at a time."
+        }
+      }
+    },
+    {
+      "id": "scheduling",
+      "parentId": "shop",
+      "slug": "scheduling",
+      "title": "Scheduling & drop-off",
+      "props": {
+        "learn": "Preferences about booking, timing, pickup and drop-off logistics."
+      },
+      "prompt": {
+        "slots": {
+          "task": "Offer the next realistic slot; be honest about the backlog."
+        }
+      }
+    },
+    {
+      "id": "style",
+      "parentId": "shop",
+      "slug": "style",
+      "title": "Response Style",
+      "props": {
+        "learn": "How this customer wants responses shaped: tone, length, structure, what to lead with.",
+        "storeAs": "constraints"
+      }
+    },
+    {
+      "id": "tool-usage",
+      "parentId": "shop",
+      "slug": "tool-usage",
+      "title": "Tool Usage",
+      "props": {
+        "learn": "Which tools to prefer or avoid and when — e.g. only mention weather when asked, always check parts cost before quoting.",
+        "storeAs": "constraints"
+      }
+    },
+    {
+      "id": "shop-facts",
+      "parentId": "shop",
+      "slug": "shop-facts",
+      "title": "Shop facts",
+      "routable": false,
+      "prompt": {
+        "slots": {
+          "knowledge": "Hours: Tue–Sat 8–5. Location: 41 Harbour Rd, dock-side drop off for outboards. Current bench backlog: about 4 days."
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Explicit fill satisfies collectBeforeHandoff, then the escalation opens with a deterministic ticket id",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "esc-intake",
+    "profile": "L4",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "R",
+        "description": "r"
+      },
+      {
+        "id": "swelling",
+        "parentId": "root",
+        "title": "Battery swelling",
+        "description": "Safety critical",
+        "fillPolicy": "explicit",
+        "escalation": {
+          "mode": "require",
+          "queue": "safety",
+          "collectBeforeHandoff": [
+            {
+              "name": "frameNumber",
+              "required": true,
+              "elicitationPrompt": "What's the frame number?"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "session": {
+    "sessionId": "s",
+    "mode": "walking",
+    "currentNodeId": "swelling",
+    "vars": {},
+    "visited": {
+      "swelling": 1
+    },
+    "stepCount": 1
+  },
+  "op": {
+    "kind": "sessionStep",
+    "input": {
+      "kind": "user",
+      "text": "FR-9981"
+    }
+  },
+  "expected": {
+    "session": {
+      "mode": "awaitingHuman",
+      "vars": {
+        "frameNumber": "FR-9981"
+      },
+      "pendingHuman": {
+        "ticketId": "ticket-swelling-1",
+        "nodeId": "swelling",
+        "since": "#1"
+      }
+    },
+    "effects": [
+      {
+        "kind": "escalate",
+        "nodeId": "swelling",
+        "ticketId": "ticket-swelling-1",
+        "queue": "safety"
+      }
+    ]
+  }
+}

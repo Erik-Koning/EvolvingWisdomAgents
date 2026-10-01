@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0",
+  "description": "A changeset whose result fails structural validation (dangling bring) is rejected",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "brings",
+    "profile": "L1",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "R",
+        "description": "r"
+      },
+      {
+        "id": "n",
+        "parentId": "root",
+        "title": "N",
+        "description": "n",
+        "bring": [
+          "kb"
+        ]
+      },
+      {
+        "id": "kb",
+        "parentId": "root",
+        "title": "KB",
+        "description": "kb",
+        "routable": false
+      }
+    ]
+  },
+  "op": {
+    "kind": "applyChangeset",
+    "ops": [
+      {
+        "op": "deleteNode",
+        "id": "kb",
+        "orphans": "cascade"
+      }
+    ]
+  },
+  "expectError": "Changeset produced an invalid graph"
+}

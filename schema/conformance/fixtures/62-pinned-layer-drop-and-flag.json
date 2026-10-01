@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "1.0",
+  "description": "A layer op violating pinned protection is dropped-and-flagged, never fatal (layers inherit the guard for free)",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "pinned",
+    "profile": "L1",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "R",
+        "description": "r"
+      },
+      {
+        "id": "cat",
+        "parentId": "root",
+        "title": "Cat",
+        "description": "c"
+      },
+      {
+        "id": "p",
+        "parentId": "cat",
+        "title": "P",
+        "description": "keep me",
+        "pinned": true
+      },
+      {
+        "id": "loose",
+        "parentId": "cat",
+        "title": "Loose",
+        "description": "l"
+      }
+    ],
+    "version": "1"
+  },
+  "op": {
+    "kind": "materializeLayers",
+    "layers": [
+      {
+        "layerId": "user:x",
+        "baseGraphId": "pinned",
+        "baseVersion": "1",
+        "scope": "user",
+        "ownerId": "x",
+        "version": "u1",
+        "ops": [
+          {
+            "op": "deleteNode",
+            "id": "p",
+            "orphans": "cascade"
+          },
+          {
+            "op": "updateNode",
+            "id": "loose",
+            "patch": {
+              "description": "still applies"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "expected": {
+    "conflicts": [
+      {
+        "layerId": "user:x",
+        "opIndex": 0,
+        "reason": "Node \"p\" is pinned (pass force to override)",
+        "droppedAt": "u1"
+      }
+    ],
+    "graph": {
+      "nodes": [
+        {
+          "id": "root"
+        },
+        {
+          "id": "cat"
+        },
+        {
+          "id": "p",
+          "pinned": true
+        },
+        {
+          "id": "loose",
+          "description": "still applies"
+        }
+      ]
+    }
+  }
+}

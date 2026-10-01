@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0",
+  "description": "recursiveBring:false expands one hop only; unknown refs are recorded as dangling, never fatal",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "brings",
+    "profile": "L1",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "R",
+        "description": "r"
+      },
+      {
+        "id": "n",
+        "parentId": "root",
+        "title": "Landing",
+        "description": "landing",
+        "bring": [
+          "k1",
+          "ghost"
+        ],
+        "recursiveBring": false
+      },
+      {
+        "id": "k1",
+        "parentId": "root",
+        "title": "K1",
+        "description": "k1",
+        "routable": false,
+        "bring": [
+          "k2"
+        ]
+      },
+      {
+        "id": "k2",
+        "parentId": "root",
+        "title": "K2",
+        "description": "k2",
+        "routable": false,
+        "bring": [
+          "n",
+          "k1"
+        ]
+      }
+    ]
+  },
+  "op": {
+    "kind": "resolveBring",
+    "nodeId": "n"
+  },
+  "expected": {
+    "brought": [
+      "k1"
+    ],
+    "dangling": [
+      "ghost"
+    ],
+    "tenantBlocked": []
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://adaptive-prompt-graph.dev/schema/1/apg.schema.json",
+  "schemaVersion": "1.0",
+  "graphId": "travel-demo",
+  "version": "1",
+  "profile": "L0",
+  "meta": { "title": "Prompt switcher demo", "tags": ["demo", "l0"] },
+  "connectors": { "llm": { "use": "anthropic" } },
+  "nodes": [
+    {
+      "id": "root",
+      "parentId": null,
+      "title": "Assistant",
+      "description": "General assistant",
+      "prompt": "You are a helpful assistant."
+    },
+    {
+      "id": "travel",
+      "parentId": "root",
+      "title": "Travel",
+      "description": "Trips, destinations, itineraries",
+      "prompt": "Ask one clarifying question about budget, season, and vibe before recommending. Never default to the most popular destination."
+    },
+    {
+      "id": "code",
+      "parentId": "root",
+      "title": "Coding",
+      "description": "Programming questions",
+      "prompt": "Answer with runnable code first, explanation second."
+    }
+  ]
+}

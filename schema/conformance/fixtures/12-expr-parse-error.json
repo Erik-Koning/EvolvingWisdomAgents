@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Malformed expressions raise a parse error",
+  "op": {
+    "kind": "evalExpr",
+    "expr": "a &&",
+    "vars": {}
+  },
+  "expectError": "Unexpected end of expression"
+}

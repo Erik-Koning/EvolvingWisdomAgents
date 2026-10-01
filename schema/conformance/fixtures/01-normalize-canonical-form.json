@@ -1,0 +1,86 @@
+{
+  "schemaVersion": "1.0",
+  "description": "String prompts desugar to task slots; defaults materialize; nodes re-serialize in DFS order; inline relations materialize into edges[]",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "norm",
+    "profile": "L1",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "Root",
+        "description": "Root node",
+        "prompt": "Be helpful."
+      },
+      {
+        "id": "b",
+        "parentId": "root",
+        "title": "B",
+        "description": "Bee",
+        "routable": false
+      },
+      {
+        "id": "a",
+        "parentId": "root",
+        "title": "A",
+        "description": "Ay",
+        "bring": [
+          "b"
+        ]
+      }
+    ]
+  },
+  "op": {
+    "kind": "normalize"
+  },
+  "expected": {
+    "graph": {
+      "profile": "L1",
+      "version": "0",
+      "nodes": [
+        {
+          "id": "root",
+          "type": "category",
+          "routable": true,
+          "visitPolicy": "repeatable",
+          "isFallback": false,
+          "prompt": {
+            "slots": {
+              "task": "Be helpful."
+            }
+          }
+        },
+        {
+          "id": "b",
+          "type": "category",
+          "routable": false
+        },
+        {
+          "id": "a",
+          "type": "category",
+          "recursiveBring": false,
+          "bringMode": "contextOnly",
+          "maxBringDepth": 3
+        }
+      ],
+      "edges": [
+        {
+          "from": "root",
+          "to": "b",
+          "kind": "child"
+        },
+        {
+          "from": "root",
+          "to": "a",
+          "kind": "child"
+        },
+        {
+          "from": "a",
+          "to": "b",
+          "kind": "bring"
+        }
+      ]
+    }
+  }
+}

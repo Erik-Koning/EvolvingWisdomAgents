@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1.0",
+  "description": "The embedding pre-filter prefers stored node.embedding vectors; the connector is called only for the query and nodes lacking one (a stored-vector re-embed would demand mock texts that don't exist and fail)",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "helpdesk",
+    "profile": "L1",
+    "defaults": { "routing": { "shortlistK": 2 } },
+    "nodes": [
+      { "id": "root", "parentId": null, "title": "Helpdesk", "description": "root", "routable": false },
+      { "id": "a1", "parentId": "root", "title": "Password reset", "description": "Reset your password",
+        "embedding": [1, 0] },
+      { "id": "a2", "parentId": "root", "title": "Billing", "description": "Invoices and refunds",
+        "embedding": [0.9, 0.1] },
+      { "id": "a3", "parentId": "root", "title": "Shipping", "description": "Delivery times" },
+      { "id": "a4", "parentId": "root", "title": "Returns", "description": "Return a package",
+        "embedding": [0.5, 0.5] }
+    ]
+  },
+  "mocks": {
+    "embeddings": {
+      "reset password": [1, 0],
+      "Shipping — Delivery times": [0, 1]
+    },
+    "classify": [{ "matches": [{ "nodeId": "a1", "confidence": 0.95 }] }]
+  },
+  "op": { "kind": "route", "query": "reset password" },
+  "expected": {
+    "matches": [{ "nodeId": "a1", "confidence": 0.95 }],
+    "shortlist": ["a1", "a2"],
+    "fallbackUsed": false
+  }
+}

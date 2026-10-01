@@ -1,0 +1,67 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Decision flows that cycle without reaching a terminal are errors",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "loops",
+    "profile": "L3",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "R",
+        "description": "r"
+      },
+      {
+        "id": "d",
+        "parentId": "root",
+        "type": "decision",
+        "title": "D",
+        "description": "first",
+        "decision": {
+          "question": "Q?",
+          "choices": [
+            {
+              "label": "Loop",
+              "value": "loop",
+              "next": "d2"
+            }
+          ]
+        }
+      },
+      {
+        "id": "d2",
+        "parentId": "root",
+        "type": "decision",
+        "title": "D2",
+        "description": "second",
+        "decision": {
+          "question": "Q2?",
+          "choices": [
+            {
+              "label": "Back",
+              "value": "back",
+              "next": "d"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "op": {
+    "kind": "validate"
+  },
+  "expected": {
+    "valid": false,
+    "errors": [
+      {
+        "code": "DECISION_UNTERMINATED",
+        "nodeId": "d"
+      },
+      {
+        "code": "DECISION_UNTERMINATED",
+        "nodeId": "d2"
+      }
+    ]
+  }
+}

@@ -1,0 +1,139 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Replay evidence gate: additive ops pass; a degrading op passes only with a verified USER-turn quote — uncited degrades and assistant-quoted degrades are dropped",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "gate",
+    "profile": "L1",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "R",
+        "description": "r"
+      },
+      {
+        "id": "cat",
+        "parentId": "root",
+        "title": "Cat",
+        "description": "c",
+        "bring": ["kn-a", "kn-b", "kn-c"]
+      },
+      {
+        "id": "kn-a",
+        "parentId": "cat",
+        "routable": false,
+        "title": "A",
+        "description": "likes espresso"
+      },
+      {
+        "id": "kn-b",
+        "parentId": "cat",
+        "routable": false,
+        "title": "B",
+        "description": "owns a kayak"
+      },
+      {
+        "id": "kn-c",
+        "parentId": "cat",
+        "routable": false,
+        "title": "C",
+        "description": "plays chess"
+      }
+    ]
+  },
+  "op": {
+    "kind": "evidenceGate",
+    "ops": [
+      {
+        "op": "addNode",
+        "parentId": "cat",
+        "node": {
+          "id": "kn-d",
+          "parentId": "cat",
+          "routable": false,
+          "title": "D",
+          "description": "learned rowing"
+        }
+      },
+      {
+        "op": "deleteNode",
+        "id": "kn-a",
+        "orphans": "cascade"
+      },
+      {
+        "op": "deleteNode",
+        "id": "kn-b",
+        "orphans": "cascade"
+      },
+      {
+        "op": "deleteNode",
+        "id": "kn-c",
+        "orphans": "cascade"
+      }
+    ],
+    "evidence": [
+      {
+        "opIndex": 2,
+        "quote": "I sold the kayak",
+        "transcriptId": "t1",
+        "turnIndex": 2
+      },
+      {
+        "opIndex": 3,
+        "quote": "you seem to have stopped playing chess",
+        "transcriptId": "t1",
+        "turnIndex": 1
+      }
+    ],
+    "transcripts": [
+      {
+        "id": "t1",
+        "turns": [
+          {
+            "role": "user",
+            "content": "hey, quick update on my hobbies"
+          },
+          {
+            "role": "assistant",
+            "content": "sure — you seem to have stopped playing chess lately?"
+          },
+          {
+            "role": "user",
+            "content": "I sold   the kayak last month, done with paddling"
+          }
+        ]
+      }
+    ]
+  },
+  "expected": {
+    "kept": [
+      {
+        "op": "addNode",
+        "parentId": "cat"
+      },
+      {
+        "op": "deleteNode",
+        "id": "kn-b"
+      }
+    ],
+    "evidence": [
+      {
+        "opIndex": 1,
+        "quote": "I sold the kayak",
+        "transcriptId": "t1",
+        "turnIndex": 2
+      }
+    ],
+    "dropped": [
+      {
+        "opIndex": 1,
+        "reason": "no-citation"
+      },
+      {
+        "opIndex": 3,
+        "reason": "not-user-turn"
+      }
+    ]
+  }
+}

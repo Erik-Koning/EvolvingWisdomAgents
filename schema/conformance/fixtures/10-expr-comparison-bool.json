@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Comparisons and boolean operators over the vars bag",
+  "op": {
+    "kind": "evalExpr",
+    "expr": "tier == 'gold' && count >= 3",
+    "vars": {
+      "tier": "gold",
+      "count": 3
+    }
+  },
+  "expected": {
+    "value": true
+  }
+}

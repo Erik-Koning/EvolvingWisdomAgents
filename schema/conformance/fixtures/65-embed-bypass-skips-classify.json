@@ -1,0 +1,30 @@
+{
+  "schemaVersion": "1.0",
+  "description": "embedBypass fast path: a decisive shortlist top-1 (sim >= minSimilarity, margin >= minMargin) answers routing WITHOUT the LLM — the empty classify mock queue proves the call was skipped; confidence = cosine, reason 'embedding'",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "bypass",
+    "profile": "L1",
+    "defaults": { "routing": { "embedBypass": { "minSimilarity": 0.6, "minMargin": 0.2 } } },
+    "nodes": [
+      { "id": "root", "parentId": null, "title": "Assistant", "description": "root", "routable": false },
+      { "id": "travel", "parentId": "root", "title": "Travel", "description": "Trips and itineraries",
+        "embedding": [1, 0] },
+      { "id": "billing", "parentId": "root", "title": "Billing", "description": "Invoices and refunds",
+        "embedding": [0, 1] }
+    ]
+  },
+  "mocks": {
+    "embeddings": {
+      "plan a trip": [1, 0]
+    },
+    "classify": []
+  },
+  "op": { "kind": "route", "query": "plan a trip" },
+  "expected": {
+    "matches": [{ "nodeId": "travel", "confidence": 1, "reason": "embedding" }],
+    "strategy": "single",
+    "fallbackUsed": false,
+    "shortlist": ["travel", "billing"]
+  }
+}

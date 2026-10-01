@@ -1,0 +1,121 @@
+{
+  "$schema": "https://adaptive-prompt-graph.dev/schema/1/apg.schema.json",
+  "schemaVersion": "1.0",
+  "graphId": "device-triage",
+  "version": "1",
+  "profile": "L3",
+  "meta": { "title": "Deterministic triage flow (the won't-start walkthrough)", "tags": ["demo", "l3"] },
+  "connectors": {
+    "llm": { "use": "anthropic" },
+    "session": { "use": "memory" },
+    "tools": { "use": "mcp-client", "config": { "servers": ["device-ops"] } }
+  },
+  "nodes": [
+    {
+      "id": "root",
+      "parentId": null,
+      "title": "Device support",
+      "description": "Troubleshooting for devices that misbehave",
+      "toolAllowlist": ["createRepairTicket", "checkWarranty"]
+    },
+    {
+      "id": "wont-start",
+      "parentId": "root",
+      "slug": "wont-start",
+      "type": "decision",
+      "title": "Won't start",
+      "description": "Device does not power on",
+      "aliases": ["dead", "no power", "won't turn on"],
+      "decision": {
+        "question": "Does the device power on at all (lights, sounds, vibration)?",
+        "saveAs": "powersOn",
+        "choices": [
+          { "label": "Yes, partially", "value": "yes", "next": "screen-check" },
+          { "label": "No, completely dead", "value": "no", "next": "charge-first" }
+        ],
+        "freeform": { "classifyInto": ["screen-check", "charge-first"] }
+      }
+    },
+    {
+      "id": "charge-first",
+      "parentId": "wont-start",
+      "slug": "charge-first",
+      "type": "answer",
+      "title": "Charge it",
+      "description": "Rule out a dead battery",
+      "prompt": "Plug in the original charger for 30 minutes, then hold the power button for 10 seconds. If nothing happens, come back and say \"still dead\"."
+    },
+    {
+      "id": "screen-check",
+      "parentId": "wont-start",
+      "slug": "screen-check",
+      "type": "decision",
+      "title": "Screen check",
+      "description": "Distinguish screen failure from boot failure",
+      "decision": {
+        "question": "Is the screen physically damaged?",
+        "saveAs": "screenDamaged",
+        "choices": [
+          { "label": "Yes", "value": "yes", "next": "warranty-check" },
+          { "label": "No", "value": "no", "next": "soft-reset" }
+        ]
+      }
+    },
+    {
+      "id": "warranty-check",
+      "parentId": "screen-check",
+      "slug": "warranty-check",
+      "type": "action",
+      "title": "Warranty check",
+      "description": "Look up warranty state before quoting a repair",
+      "action": {
+        "tool": "checkWarranty",
+        "argsFromVars": ["serialNumber"],
+        "onSuccess": "book-repair",
+        "onError": "repair-quote",
+        "resultSchema": { "type": "object", "required": ["inWarranty"] },
+        "saveResultAs": "warranty"
+      },
+      "fillPolicy": "explicit",
+      "collect": [
+        { "name": "serialNumber", "required": true, "elicitationPrompt": "What's the serial number (back of the device)?" }
+      ]
+    },
+    {
+      "id": "book-repair",
+      "parentId": "warranty-check",
+      "slug": "book-repair",
+      "type": "answer",
+      "title": "Book repair",
+      "description": "In-warranty repair booking",
+      "prompt": "Good news — the device is covered. Warranty record: {{warranty.inWarranty}}. Book a free repair at a service point; bring the serial number {{serialNumber}}."
+    },
+    {
+      "id": "repair-quote",
+      "parentId": "warranty-check",
+      "slug": "repair-quote",
+      "type": "answer",
+      "title": "Repair quote",
+      "description": "Out-of-warranty repair path",
+      "prompt": "The warranty lookup didn't confirm coverage. A screen repair is typically flat-rate; a technician will confirm before any work."
+    },
+    {
+      "id": "soft-reset",
+      "parentId": "screen-check",
+      "slug": "soft-reset",
+      "type": "answer",
+      "title": "Soft reset",
+      "description": "Boot-loop recovery steps",
+      "prompt": "Hold power + volume-down for 15 seconds to force a restart. If it loops again, note any error shown and ask me about it."
+    },
+    {
+      "id": "misc",
+      "parentId": "root",
+      "slug": "misc",
+      "title": "Everything else",
+      "description": "Anything not covered by a specific flow",
+      "isFallback": true,
+      "prompt": "Answer generally; if the issue matches a known flow, suggest starting it."
+    }
+  ]
+}

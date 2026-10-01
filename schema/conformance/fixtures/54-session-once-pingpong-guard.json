@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Two once-nodes whose fallbacks point at each other end the walk on the first divert cycle instead of burning the step limit",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "pingpong",
+    "profile": "L3",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "R",
+        "description": "r"
+      },
+      {
+        "id": "d1",
+        "parentId": "root",
+        "type": "decision",
+        "title": "D1",
+        "description": "first",
+        "visitPolicy": "once",
+        "fallbackNodeId": "d2",
+        "decision": {
+          "question": "Q1?",
+          "choices": [
+            {
+              "label": "Done",
+              "value": "done",
+              "next": "fin"
+            }
+          ]
+        }
+      },
+      {
+        "id": "d2",
+        "parentId": "root",
+        "type": "decision",
+        "title": "D2",
+        "description": "second",
+        "visitPolicy": "once",
+        "fallbackNodeId": "d1",
+        "decision": {
+          "question": "Q2?",
+          "choices": [
+            {
+              "label": "Done",
+              "value": "done",
+              "next": "fin"
+            }
+          ]
+        }
+      },
+      {
+        "id": "fin",
+        "parentId": "root",
+        "type": "answer",
+        "title": "Fin",
+        "description": "terminal",
+        "prompt": "All done."
+      }
+    ]
+  },
+  "session": {
+    "sessionId": "s",
+    "mode": "walking",
+    "currentNodeId": "d1",
+    "vars": {},
+    "visited": {
+      "d1": 2,
+      "d2": 2
+    },
+    "stepCount": 2
+  },
+  "op": {
+    "kind": "sessionStep",
+    "input": {
+      "kind": "user",
+      "text": "hm"
+    }
+  },
+  "expected": {
+    "session": {
+      "mode": "routing",
+      "visited": {
+        "d1": 3,
+        "d2": 3
+      }
+    },
+    "effects": [
+      {
+        "kind": "walkComplete"
+      }
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+[tool.uv.workspace]
+members = ["packages/apg-core"]
+
+[dependency-groups]
+dev = ["apg-core", "pytest>=8"]
+
+[tool.uv.sources]
+apg-core = { workspace = true }

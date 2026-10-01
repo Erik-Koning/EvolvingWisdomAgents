@@ -1,0 +1,51 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Byte-stable outline: DFS, authored sibling order, two-space indent, id: title — description; non-routable nodes excluded",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "travel-demo",
+    "profile": "L1",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "Assistant",
+        "description": "General assistant",
+        "prompt": "You are a helpful assistant."
+      },
+      {
+        "id": "travel",
+        "parentId": "root",
+        "title": "Travel",
+        "description": "Trips and itineraries",
+        "prompt": "Ask one clarifying question before recommending."
+      },
+      {
+        "id": "visa",
+        "parentId": "travel",
+        "title": "Visas",
+        "description": "Entry requirements"
+      },
+      {
+        "id": "code",
+        "parentId": "root",
+        "title": "Coding",
+        "description": "Programming questions",
+        "prompt": "Answer with runnable code first."
+      },
+      {
+        "id": "hidden",
+        "parentId": "root",
+        "title": "Hidden KB",
+        "description": "not routable",
+        "routable": false
+      }
+    ]
+  },
+  "op": {
+    "kind": "serializeOutline"
+  },
+  "expected": {
+    "outline": "root: Assistant — General assistant\n  travel: Travel — Trips and itineraries\n    visa: Visas — Entry requirements\n  code: Coding — Programming questions"
+  }
+}

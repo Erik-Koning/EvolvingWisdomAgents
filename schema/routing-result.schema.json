@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://adaptive-prompt-graph.dev/schema/1/routing-result.schema.json",
+  "title": "APG routing result",
+  "type": "object",
+  "required": ["matches", "strategy", "fallbackUsed"],
+  "properties": {
+    "matches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["nodeId", "confidence"],
+        "properties": {
+          "nodeId": { "type": "string" },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "reason": { "type": "string" }
+        },
+        "additionalProperties": false
+      }
+    },
+    "strategy": { "enum": ["single", "multi"] },
+    "fallbackUsed": { "type": "boolean" },
+    "broughtNodes": { "type": "array", "items": { "type": "string" } },
+    "shortlist": { "type": "array", "items": { "type": "string" } },
+    "latencyMs": { "type": "number" },
+    "tokensIn": { "type": "integer" },
+    "tokensOut": { "type": "integer" },
+    "cacheHit": { "type": "boolean" }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,65 @@
+{
+  "$schema": "https://adaptive-prompt-graph.dev/schema/1/apg.schema.json",
+  "schemaVersion": "1.0",
+  "graphId": "self-mutating-support",
+  "version": "1",
+  "profile": "L5",
+  "meta": {
+    "title": "The graph that edits itself",
+    "tags": ["demo", "l5"],
+    "mutationPolicy": {
+      "baseScope": "changeset-pipeline",
+      "userScope": { "autoCommit": true, "maxRoutableNodesPerUser": 10 },
+      "gapClustering": { "minClusterSize": 15, "window": "P30D" }
+    }
+  },
+  "connectors": {
+    "llm": { "use": "anthropic" },
+    "embeddings": { "use": "openai" },
+    "store": { "use": "file" },
+    "session": { "use": "memory" },
+    "telemetry": { "use": "otel" }
+  },
+  "nodes": [
+    {
+      "id": "root",
+      "parentId": null,
+      "title": "Assistant",
+      "description": "Self-improving assistant",
+      "prompt": {
+        "slots": {
+          "persona": "You are a support assistant whose taxonomy evolves from feedback.",
+          "constraints": "Answers must come from the matched category's knowledge; if the fit is poor, say so — misfits feed the category-gap pipeline."
+        }
+      }
+    },
+    {
+      "id": "billing",
+      "parentId": "root",
+      "slug": "billing",
+      "title": "Billing",
+      "description": "Charges, invoices, refunds",
+      "prompt": "Resolve billing questions precisely; state amounts and dates explicitly.",
+      "metadata": { "status": "production", "evalScore": 0.91 }
+    },
+    {
+      "id": "billing-disputes",
+      "parentId": "billing",
+      "slug": "disputes",
+      "title": "Disputed charges",
+      "description": "Charges the customer does not recognize",
+      "prompt": "Never argue; verify the charge line-by-line, then offer the dispute form.",
+      "metadata": { "status": "staging", "evalScore": 0.78 }
+    },
+    {
+      "id": "gap-candidates",
+      "parentId": "root",
+      "slug": "gap-candidates",
+      "title": "Uncategorized",
+      "description": "Queries with no good home — the misfit pool",
+      "isFallback": true,
+      "prompt": "Answer as best you can and flag the query for gap clustering.",
+      "metadata": { "status": "production", "tags": ["misfit-pool"] }
+    }
+  ]
+}

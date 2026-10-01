@@ -1,0 +1,77 @@
+{
+  "$schema": "https://adaptive-prompt-graph.dev/schema/1/apg.schema.json",
+  "schemaVersion": "1.0",
+  "graphId": "faq-props-demo",
+  "version": "1",
+  "profile": "L1",
+  "meta": {
+    "title": "FAQ routing via props descriptor",
+    "tags": ["demo", "l1", "descriptor"]
+  },
+  "defaults": {
+    "routing": {
+      "descriptor": ["props.question"],
+      "embedText": ["props.question", "aliases"]
+    }
+  },
+  "connectors": { "llm": { "use": "anthropic" } },
+  "nodes": [
+    {
+      "id": "root",
+      "parentId": null,
+      "title": "Account FAQ",
+      "description": "Frequently asked account questions",
+      "routable": false,
+      "prompt": {
+        "slots": {
+          "persona": "You answer account FAQs verbatim from the matched entry; if the question doesn't match, say so.",
+          "constraints": "Never invent steps that aren't in the answer."
+        }
+      }
+    },
+    {
+      "id": "reset-password",
+      "parentId": "root",
+      "slug": "reset-password",
+      "props": {
+        "question": "How do I reset my password?",
+        "audience": "all-users"
+      },
+      "aliases": ["forgot password", "can't log in"],
+      "prompt": {
+        "slots": {
+          "task": "Answer the FAQ \"{{props.question}}\" using this canonical answer: Go to Settings → Security → Reset password. A reset link arrives within 2 minutes; check spam after that."
+        }
+      }
+    },
+    {
+      "id": "close-account",
+      "parentId": "root",
+      "slug": "close-account",
+      "props": {
+        "question": "How do I close my account?",
+        "audience": "all-users"
+      },
+      "aliases": ["delete account", "cancel subscription"],
+      "prompt": {
+        "slots": {
+          "task": "Answer the FAQ \"{{props.question}}\" using this canonical answer: Settings → Account → Close account. Export your data first — closure is irreversible after 30 days."
+        }
+      }
+    },
+    {
+      "id": "change-email",
+      "parentId": "root",
+      "slug": "change-email",
+      "props": {
+        "question": "How do I change the email on my account?",
+        "audience": "all-users"
+      },
+      "prompt": {
+        "slots": {
+          "task": "Answer the FAQ \"{{props.question}}\" using this canonical answer: Settings → Profile → Email. Both old and new addresses must confirm the change."
+        }
+      }
+    }
+  ]
+}

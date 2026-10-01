@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "1.0",
+  "description": "No match above threshold falls back to the first isFallback node in DFS order",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "travel-demo",
+    "profile": "L3",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "Assistant",
+        "description": "General assistant",
+        "prompt": "You are a helpful assistant."
+      },
+      {
+        "id": "travel",
+        "parentId": "root",
+        "title": "Travel",
+        "description": "Trips and itineraries",
+        "prompt": "Ask one clarifying question before recommending."
+      },
+      {
+        "id": "visa",
+        "parentId": "travel",
+        "title": "Visas",
+        "description": "Entry requirements"
+      },
+      {
+        "id": "code",
+        "parentId": "root",
+        "title": "Coding",
+        "description": "Programming questions",
+        "prompt": "Answer with runnable code first."
+      },
+      {
+        "id": "misc",
+        "parentId": "root",
+        "title": "Everything else",
+        "description": "Catch-all",
+        "isFallback": true
+      }
+    ]
+  },
+  "mocks": {
+    "classify": [
+      {
+        "matches": [
+          {
+            "nodeId": "travel",
+            "confidence": 0.3
+          }
+        ]
+      }
+    ]
+  },
+  "op": {
+    "kind": "route",
+    "query": "ummm"
+  },
+  "expected": {
+    "matches": [
+      {
+        "nodeId": "misc",
+        "confidence": 0
+      }
+    ],
+    "strategy": "single",
+    "fallbackUsed": true
+  }
+}

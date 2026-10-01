@@ -1,0 +1,68 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Explicit fill coerces only plain decimal literals; '1_000' stays a string, fails the number schema, and re-elicits (JS/Python parity pin)",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "coerce",
+    "profile": "L2",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "R",
+        "description": "r"
+      },
+      {
+        "id": "intake",
+        "parentId": "root",
+        "title": "Intake",
+        "description": "amount intake",
+        "fillPolicy": "explicit",
+        "collect": [
+          {
+            "name": "amount",
+            "required": true,
+            "schema": {
+              "type": "number"
+            },
+            "elicitationPrompt": "How much?"
+          }
+        ]
+      }
+    ]
+  },
+  "session": {
+    "sessionId": "s",
+    "mode": "walking",
+    "currentNodeId": "intake",
+    "vars": {},
+    "visited": {
+      "intake": 1
+    },
+    "stepCount": 1
+  },
+  "op": {
+    "kind": "sessionStep",
+    "input": {
+      "kind": "user",
+      "text": "1_000"
+    }
+  },
+  "expected": {
+    "session": {
+      "mode": "walking",
+      "currentNodeId": "intake",
+      "vars": {
+        "amount": null
+      }
+    },
+    "effects": [
+      {
+        "kind": "elicit",
+        "nodeId": "intake",
+        "variable": "amount",
+        "prompt": "How much?"
+      }
+    ]
+  }
+}

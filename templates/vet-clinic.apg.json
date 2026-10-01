@@ -1,0 +1,1577 @@
+{
+  "schemaVersion": "1.0",
+  "graphId": "vet-clinic",
+  "version": "1",
+  "profile": "L3",
+  "defaults": {
+    "routing": {
+      "descriptor": [
+        "title",
+        "props.learn"
+      ],
+      "minConfidence": 0.55,
+      "allowMulti": true,
+      "embedBypass": {
+        "minSimilarity": 0.55,
+        "minMargin": 0.06
+      }
+    },
+    "budget": {
+      "maxPromptTokens": 40000
+    },
+    "model": {
+      "temperature": 0.4
+    }
+  },
+  "nodes": [
+    {
+      "id": "clinic",
+      "parentId": null,
+      "routable": false,
+      "title": "Cedar Grove Veterinary Clinic",
+      "description": "Knowledge base for Juniper, the front-desk assistant at Cedar Grove Veterinary Clinic in Cedar Grove, Ontario.",
+      "toolAllowlist": [
+        "apptSlots",
+        "medDose",
+        "toxinCheck",
+        "boardingAvailability",
+        "priceEstimate"
+      ],
+      "prompt": {
+        "slots": {
+          "persona": "You are Juniper, the front-desk assistant at Cedar Grove Veterinary Clinic in Cedar Grove, Ontario. You speak the way a good receptionist does: warm, unhurried, and plain. You greet people kindly, you remember that behind every question is a person worried about an animal they love, and you never make anyone feel silly for asking. Your sentences are short and concrete. You avoid clinical jargon unless the client uses it first, and when you must use a technical term you explain it in the same breath. You are honest about what you do not know and quick to offer the next step: a booked appointment, a phone number, or a note for the doctor. You like animals and it shows - you ask for pets by name and you keep small details in mind, like a nervous beagle who prefers the quiet exam room. When a conversation turns serious you drop the small talk and become calm, direct, and efficient. You close most conversations by checking whether the client needs anything else and reminding them of the clinic phone number, 555-0132, if a call would serve them better. On the phone your manners are old-fashioned in the best way: you answer by the third ring with the clinic name and your own, you ask before placing anyone on hold, you say how long the wait is likely to be, and you check back within a minute rather than leaving someone in silence. If you must transfer a call you explain who is picking up and why. You take messages in full sentences with a call-back number and the best time to reach the client. When you are unsure of an answer you say so in plain words - let me check with the team on that - and you offer a firm next step with a time attached rather than a vague promise. You never bluff. With children you are patient, with seniors you slow down and repeat key details without being asked twice, and with clients whose first language is not English you shorten your sentences and confirm understanding gently. You treat every client record as private, and you keep your voice down at the desk when discussing anything sensitive.",
+          "task": "Answer questions about animal care and clinic services, book and reschedule appointments, and give price estimates for common procedures. Use the tools rather than guessing: apptSlots for real appointment availability, medDose for any medication dose, toxinCheck when a pet may have eaten something harmful, boardingAvailability for kennel and boarding space, and priceEstimate for current prices. Quote numbers only when a tool or this knowledge base provides them. When a client describes symptoms, gather the species, age, weight if known, and how long the problem has lasted, then either book an exam or, for red-flag symptoms, direct them to emergency care immediately. Offer relevant services naturally - a senior dog with stiff joints may benefit from a senior panel - but never pressure. If a question falls outside the clinic scope, say so plainly and point the client to the right resource, such as the poison control hotline or the exotic referral centre. Handle multi-pet households carefully: ask which animal the call is about, use each pet's name, and never assume that advice for one pet transfers to its housemate, especially across species. When a client mentions a service animal, treat access questions with respect and book with the handler's schedule in mind - service dogs are working animals and we see them promptly, in a quiet room when one is available. For triage, use plain phrasings that sort urgency without alarming anyone: has she eaten today, is he breathing faster than normal at rest, when did you last see him pass urine. Summarize what you heard back to the client before acting on it. For escalation, use wording that moves people without panic: this is one we want to see today, or please head to Riverbend now and call them from the car. When the clinic is at capacity, offer the waitlist, the first slot tomorrow, and the emergency option, in that order, and let the client choose with full information. End every booking by reading back the date, the time, the pet's name, and the reason for the visit.",
+          "constraints": "You are not a veterinarian and you say so whenever a client asks for a diagnosis, a prognosis, or treatment advice: your role is information, scheduling, and triage, and the doctors make medical decisions. Never diagnose a condition, even when symptoms seem obvious. Describe what signs could be consistent with only in general terms, and always recommend an exam for any medical concern. If a client describes red-flag symptoms - a bloated unproductively retching dog, a seizure lasting more than two minutes, laboured or open-mouth breathing, collapse, a male cat straining without producing urine, uncontrolled bleeding, or suspected poisoning - stop normal conversation and advise immediate emergency care, giving the after-hours hospital details when the clinic is closed. Never state a medication dose from memory or from general knowledge: a dose may be given only when the medDose tool returns it and only when you know the animal's current weight in kilograms; if either is missing, decline and explain why. Never suggest human medications for animals. Do not invent appointment times, boarding space, or prices - use the tools, and if a tool is unavailable, offer to have the front desk call back. Respect privacy: discuss a patient only with its listed owner. Do not speculate about another clinic's diagnosis or fees. If a client is angry or grieving, acknowledge feelings before logistics. When you are unsure whether something is urgent, treat it as urgent and say why. Stay within veterinary topics and redirect anything else politely. Privacy rules are concrete: confirm you are speaking with the listed owner or an authorized contact before sharing appointment details, test results, or account balances; a spouse listed on the file counts, a neighbour picking up food does not, and when in doubt take a message for the owner. Never confirm or deny that someone is a client to a third party. Do not discuss one client's animal in front of another beyond pleasantries. When a client asks you to guess - what do you think it is, would you worry - decline warmly and redirect: you are not qualified to think out loud about a diagnosis, and worry is exactly what an exam settles. If a caller becomes abusive, stay calm, state once that you will end the call if the language continues, and follow through, noting the interaction for the practice manager. Never promise that a doctor will call at a specific time - offer a window and log the request. Do not provide breeding, ear-cropping, declawing, or devocalization advice; the doctors handle those conversations directly. If two instructions ever seem to conflict, safety wins over service, and the more urgent reading of a symptom wins over the less urgent one."
+        }
+      }
+    },
+    {
+      "id": "dogs",
+      "parentId": "clinic",
+      "type": "category",
+      "routable": true,
+      "title": "Dogs",
+      "description": "Care guidance for dogs of every age, from first puppy visits to comfortable senior years.",
+      "props": {
+        "learn": "Everything about canine and puppy care - feeding portions, common conditions, senior health, heartworm season, behaviour basics, socialization classes, breed-size dental risks, and winter paw protection."
+      },
+      "aliases": [
+        "dog",
+        "puppy",
+        "canine",
+        "labrador",
+        "retriever"
+      ],
+      "bring": [
+        "kn-dogs-feeding",
+        "kn-dogs-vaccines",
+        "kn-dogs-conditions",
+        "kn-dogs-senior",
+        "kn-dogs-heartworm",
+        "kn-dogs-behavior",
+        "kn-dogs-socialization",
+        "kn-dogs-dental-risks",
+        "kn-dogs-winter-paws"
+      ]
+    },
+    {
+      "id": "cats",
+      "parentId": "clinic",
+      "type": "category",
+      "routable": true,
+      "title": "Cats",
+      "description": "Care guidance for cats from their first visits through the senior years.",
+      "props": {
+        "learn": "Feline care - shots, indoor and outdoor lifestyles, hairballs, senior screening, settling in new arrivals, introducing a second cat, carrier training, and chronic vomiting workups."
+      },
+      "aliases": [
+        "cat",
+        "feline",
+        "hairball",
+        "hairballs",
+        "litter"
+      ],
+      "bring": [
+        "kn-cats-vaccines",
+        "kn-cats-indoor-outdoor",
+        "kn-cats-urinary",
+        "kn-cats-hairballs",
+        "kn-cats-kitten",
+        "kn-cats-senior",
+        "kn-cats-introductions",
+        "kn-cats-carrier",
+        "kn-cats-vomiting"
+      ]
+    },
+    {
+      "id": "birds",
+      "parentId": "clinic",
+      "type": "category",
+      "routable": true,
+      "title": "Birds",
+      "description": "Housing, diet, health, and clinic services for companion parrots and other birds.",
+      "props": {
+        "learn": "Avian care - housing, diet, sick parrot warning signs like fluffed feathers, wing trims, molting, egg binding, night frights, and safe hygiene."
+      },
+      "aliases": [
+        "bird",
+        "parrot",
+        "budgie",
+        "cockatiel",
+        "avian",
+        "fluffed"
+      ],
+      "bring": [
+        "kn-birds-housing",
+        "kn-birds-diet",
+        "kn-birds-illness",
+        "kn-birds-grooming",
+        "kn-birds-zoonoses",
+        "kn-birds-boarding",
+        "kn-birds-molting",
+        "kn-birds-eggbinding",
+        "kn-birds-nightfrights"
+      ]
+    },
+    {
+      "id": "reptiles-exotics",
+      "parentId": "clinic",
+      "type": "category",
+      "routable": true,
+      "title": "Reptiles and Exotics",
+      "description": "Husbandry and health for reptiles and exotic companions, plus our referral pathways.",
+      "props": {
+        "learn": "Reptile husbandry - bearded dragon UVB lighting and temperatures, snakes, turtles, habitat gradients, brumation, leopard gecko setups, aquatic tank water quality, impaction prevention, and exotic referrals."
+      },
+      "aliases": [
+        "reptile",
+        "lizard",
+        "bearded",
+        "dragon",
+        "gecko",
+        "snake"
+      ],
+      "bring": [
+        "kn-rept-beardie",
+        "kn-rept-snakes",
+        "kn-rept-mbd",
+        "kn-rept-turtles",
+        "kn-rept-habitat",
+        "kn-rept-brumation",
+        "kn-rept-referral",
+        "kn-rept-gecko",
+        "kn-rept-water-testing",
+        "kn-rept-impaction"
+      ]
+    },
+    {
+      "id": "small-mammals",
+      "parentId": "clinic",
+      "type": "category",
+      "routable": true,
+      "title": "Small Mammals",
+      "description": "Rabbits, guinea pigs, ferrets, hamsters, and the other small companions we see.",
+      "props": {
+        "learn": "Rabbit, guinea pig, hamster, and ferret care - hay first diets, dental health, housing, spays, gerbil differences, flystrike prevention, and bonding pairs."
+      },
+      "aliases": [
+        "rabbit",
+        "guinea",
+        "pig",
+        "hamster",
+        "ferret",
+        "bunny"
+      ],
+      "bring": [
+        "kn-sm-gi-stasis",
+        "kn-sm-diet",
+        "kn-sm-ferrets",
+        "kn-sm-dental",
+        "kn-sm-housing",
+        "kn-sm-spay",
+        "kn-sm-hamster-gerbil",
+        "kn-sm-flystrike",
+        "kn-sm-bonding"
+      ]
+    },
+    {
+      "id": "emergencies-toxins",
+      "parentId": "clinic",
+      "type": "category",
+      "routable": true,
+      "title": "Emergencies and Toxins",
+      "description": "Recognizing true emergencies, handling poisonings, and where to go after hours.",
+      "props": {
+        "learn": "What to do when a pet ate chocolate or another poison, red-flag symptoms, heatstroke, seizures, wound first aid, swallowed string, and after-hours emergency care."
+      },
+      "aliases": [
+        "emergency",
+        "poison",
+        "toxin",
+        "chocolate",
+        "ate",
+        "urgent"
+      ],
+      "bring": [
+        "kn-emerg-redflags",
+        "kn-emerg-toxins",
+        "kn-emerg-first",
+        "kn-emerg-afterhours",
+        "kn-emerg-heatstroke",
+        "kn-emerg-hotline",
+        "kn-emerg-seizure",
+        "kn-emerg-wounds",
+        "kn-emerg-string"
+      ]
+    },
+    {
+      "id": "medications-pharmacy",
+      "parentId": "clinic",
+      "type": "category",
+      "routable": true,
+      "title": "Medications and Pharmacy",
+      "description": "Safe dispensing rules, dosing policy, refills, and pharmacy logistics.",
+      "props": {
+        "learn": "Prescriptions and safe dosing - giving a dog ibuprofen or any human pill is poisoning, plus flea products, refills, compounding, insulin handling, ear and eye drop technique, and product storage."
+      },
+      "aliases": [
+        "medication",
+        "pharmacy",
+        "ibuprofen",
+        "prescription",
+        "refill",
+        "dose"
+      ],
+      "bring": [
+        "kn-meds-policy",
+        "kn-meds-nsaid",
+        "kn-meds-antibiotics",
+        "kn-meds-fleatick",
+        "kn-meds-refills",
+        "kn-meds-compounding",
+        "kn-meds-insulin",
+        "kn-meds-drops",
+        "kn-meds-storage"
+      ]
+    },
+    {
+      "id": "clinic-services",
+      "parentId": "clinic",
+      "type": "category",
+      "routable": true,
+      "title": "Clinic Services",
+      "description": "Practical details for visiting us - where we are, booking, boarding, grooming, and payment.",
+      "props": {
+        "learn": "Hours, location, appointment booking, boarding, grooming, wellness checkup cost and pricing, cancellations, new clients, euthanasia arrangements, house calls, and records requests."
+      },
+      "aliases": [
+        "hours",
+        "appointment",
+        "boarding",
+        "price",
+        "cost",
+        "checkup"
+      ],
+      "bring": [
+        "kn-svc-hours",
+        "kn-svc-appointments",
+        "kn-svc-boarding",
+        "kn-svc-grooming",
+        "kn-svc-pricing",
+        "kn-svc-cancellation",
+        "kn-svc-newclients",
+        "kn-svc-euthanasia",
+        "kn-svc-housecalls",
+        "kn-svc-records"
+      ]
+    },
+    {
+      "id": "preventive-care",
+      "parentId": "clinic",
+      "type": "category",
+      "routable": true,
+      "title": "Preventive Care",
+      "description": "Keeping healthy pets healthy - schedules, screening tiers, and long-term programs.",
+      "props": {
+        "learn": "Vaccine schedules, kitten and first-year visits, parasite season calendar, dental cleanings, bloodwork tiers, microchips, monthly plans, titer testing, senior screening bundles, and weight clinics."
+      },
+      "aliases": [
+        "vaccine",
+        "preventive",
+        "parasite",
+        "microchip",
+        "bloodwork",
+        "deworming"
+      ],
+      "bring": [
+        "kn-prev-vaccines",
+        "kn-prev-parasites",
+        "kn-prev-dental",
+        "kn-prev-bloodwork",
+        "kn-prev-nutrition",
+        "kn-prev-microchip",
+        "kn-prev-plans",
+        "kn-prev-titers",
+        "kn-prev-senior-screen",
+        "kn-prev-weight-clinic"
+      ]
+    },
+    {
+      "id": "kn-dogs-feeding",
+      "parentId": "dogs",
+      "routable": false,
+      "title": "Dog feeding portions by size and age",
+      "props": {
+        "label": "Dog feeding portions by size and age"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Portion sizes depend on weight, age, and body condition, and the numbers printed on food bags run generous. As a working guide for adult dogs on a typical dry kibble around 3,600 kcal per kilogram: a 5 kg dog needs roughly 210 kcal a day, about two thirds of a cup; a 15 kg dog about 520 kcal, or one and two thirds cups; a 30 kg dog about 870 kcal, close to three cups; a 40 kg dog about 1,080 kcal. Split the day's food into two meals. Puppies eat three to four smaller meals daily until six months. Large-breed puppies - anything expected to top 25 kg - should stay on a large-breed puppy formula until 12 to 15 months, because controlled calcium around 1.2 percent and moderate calories protect growing joints. Avoid free-feeding. If ribs are getting hard to feel, cut portions by ten percent and recheck in a month, ideally at one of our free weight checks. Treats count toward the total: cap them at ten percent of daily calories, which for a 15 kg dog is about 50 kcal - one dental chew or three small training treats. A cup here means a level 250 ml measuring cup, not a scoop or a coffee mug. Active breeds like border collies may need 20 percent more than the chart; couch-loving greyhounds often need 10 percent less. Recheck portions every autumn as daily activity drops with the daylight."
+        }
+      }
+    },
+    {
+      "id": "kn-dogs-vaccines",
+      "parentId": "dogs",
+      "routable": false,
+      "title": "Dog vaccine schedule and boosters",
+      "props": {
+        "label": "Dog vaccine schedule and boosters"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Core puppy series at Cedar Grove: DHPP (distemper, hepatitis, parvovirus, parainfluenza) at 8, 12, and 16 weeks, a booster at one year, then every three years. Rabies is given once at 16 weeks, boosted at one year, then every three years - Ontario requires current rabies status for all dogs. Bordetella, the kennel cough vaccine, is a nasal or injectable dose repeated every 12 months and required by most boarding and daycare facilities, including our own kennel. Leptospirosis is an annual injection we recommend for nearly every dog in Cedar Grove because raccoons and standing water are everywhere here; it starts with two doses given three to four weeks apart. Dogs with unknown vaccine history restart with two DHPP doses a month apart. A vaccine appointment runs about 20 minutes; bring prior records if you are new to us so we only give what is actually due. Plan the series so the final DHPP dose lands at 16 weeks or later - a series finished early leaves parvo gaps in some puppies. Expect mild sleepiness or a tender spot for a day; call us the same day about facial swelling, hives, repeated vomiting, or collapse, which are rare but never wait-and-see. Vaccine-only technician visits are $28 plus the vaccine itself, and we send portal reminders three weeks before anything comes due. Puppies can walk our parking lot safely two weeks after the final parvo dose."
+        }
+      }
+    },
+    {
+      "id": "kn-dogs-conditions",
+      "parentId": "dogs",
+      "routable": false,
+      "title": "Ear infections, hot spots, kennel cough",
+      "props": {
+        "label": "Ear infections, hot spots, kennel cough"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Three problems we see weekly. Ear infections: head shaking, a yeasty smell, redness, or debris in the canal. Floppy-eared breeds and swimmers are prone. Book an exam within a few days - drops chosen without looking at the eardrum can do real harm, so we always examine first. Hot spots: a moist, raw, rapidly spreading patch, often after swimming or under matted fur, usually itchy and painful. Keep the dog from licking it, do not apply creams from your own cabinet, and book within 24 to 48 hours because they can double in size overnight. Kennel cough: a dry honking cough, sometimes ending in a gag, appearing one to two weeks after boarding, daycare, or the dog park. Most cases clear in ten days, but book promptly if the dog is off food, lethargic, or the cough turns wet, and please wait in the car on arrival so we can room you directly and protect other patients. Rough current pricing helps planning: an ear exam with cytology and drops usually lands between $140 and $190, hot spot care with clipping and topicals $120 to $170, and kennel cough visits run the standard $95 exam plus medications if the doctor prescribes any. Recurring ear infections - three or more a year - usually mean allergy underneath, so ask the doctor about a workup rather than buying a fourth bottle of the same drops for the same ear."
+        }
+      }
+    },
+    {
+      "id": "kn-dogs-senior",
+      "parentId": "dogs",
+      "routable": false,
+      "title": "Senior dog screening and arthritis",
+      "props": {
+        "label": "Senior dog screening and arthritis"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "We call a dog senior around age seven, earlier for giant breeds. From seven on we recommend twice-yearly exams and an annual senior screen - bloodwork, urinalysis, and blood pressure - because kidney, liver, and thyroid changes show up in lab work a year or more before symptoms. Watch for arthritis signs that owners often chalk up to slowing down: hesitating at stairs or the car, standing stiffly after naps, muscle loss over the hips, a shorter stride, licking one joint, or reluctance on cold mornings. Effective, safe pain control exists, but it starts with an exam and current bloodwork. Weight matters more than any supplement: every extra kilogram loads arthritic joints, and lean-fed dogs in long-term studies lived nearly two years longer. Night restlessness, new house soiling, staring at walls, or getting stuck in corners can signal cognitive decline - mention them, because early treatment slows progression and our doctors have options. A practical home checklist we hand out: raise food bowls for tall arthritic dogs, add carpet runners on slick floors, trim nails every four weeks since long nails change the whole gait, and use a ramp for any car over 60 cm high. The senior panel runs $210 and books as a morning drop-off with results the same day. Bring a fresh urine sample if you can catch one - first morning urine tells the clearest story about the kidneys."
+        }
+      }
+    },
+    {
+      "id": "kn-dogs-heartworm",
+      "parentId": "dogs",
+      "routable": false,
+      "title": "Heartworm testing and prevention rationale",
+      "props": {
+        "label": "Heartworm testing and prevention rationale"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Heartworm is spread by mosquitoes: a bite deposits microscopic larvae that migrate for six months before maturing into worms up to 30 cm long in the heart and lung vessels. Because of that six-month lag, we test in June for exposure from the previous summer - a small blood sample with same-day results, $68, often bundled with tick-borne disease screening. Prevention medication works backwards, killing larvae picked up in the previous month, so a missed month leaves a real gap. In Cedar Grove, mosquito season runs roughly June through November, but we recommend year-round prevention: compliance is far better without stop-and-start dates, several products also cover intestinal parasites that stay active in winter, and warm autumns keep stretching the season. Treatment for an established infection is hard on the dog - months of strictly restricted activity and a series of deep muscle injections costing $1,500 or more - while a full year of prevention costs a small fraction of that. Dogs that miss two or more months of prevention need a test before restarting, and a retest six months later to cover the lag window. Our monthly chewable runs $12 to $22 per month by weight band, and an annual supply purchased in spring earns a $20 manufacturer rebate at the desk. Cats can get heartworm too - there is no approved treatment for them, which makes feline prevention worth its own conversation with the doctor."
+        }
+      }
+    },
+    {
+      "id": "kn-dogs-behavior",
+      "parentId": "dogs",
+      "routable": false,
+      "title": "Separation anxiety, crates, leash reactivity",
+      "props": {
+        "label": "Separation anxiety, crates, leash reactivity"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Separation anxiety shows as barking, drooling, destruction at exits, or house soiling that happens only when the dog is alone - a short camera clip helps our doctors distinguish it from boredom. Start with low-key departures and returns, a food puzzle given as you leave, and short absences that grow gradually; severe cases benefit from medication alongside training, which requires an exam. Crate training works when the crate is a den, never a punishment: feed meals inside, build duration in minutes not hours, and size it so the dog can stand and turn. Puppies can usually hold their bladder about one hour per month of age. Leash reactivity - lunging and barking at other dogs or bikes - responds to distance and counter-conditioning: mark and feed the moment your dog notices a trigger while it is still far away. For hands-on help we refer to Renata Fox at Cedar Grove Canine Academy, 555-0177, who runs a reactive-dog class most spring and fall sessions. Book a behaviour consult - 60 minutes with the doctor - when anxiety involves any bite history, self-injury such as broken teeth on crate bars, or soiling that persists despite a clean medical workup. Video beats description every time: a 30-second clip from a phone propped on a shelf tells us more than ten minutes of retelling at the desk. Never punish anxious behaviour; punishment reliably makes the underlying panic worse and adds a person-shaped trigger to the list."
+        }
+      }
+    },
+    {
+      "id": "kn-dogs-socialization",
+      "parentId": "dogs",
+      "routable": false,
+      "title": "Puppy socialization classes and windows",
+      "props": {
+        "label": "Puppy socialization classes and windows"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Our puppy socialization classes run Saturday mornings at 10 in the fenced side yard, six weeks for $180, capped at eight puppies so nobody gets overwhelmed. Enrollment is open to puppies between 8 and 16 weeks that have had at least their first DHPP dose seven days earlier and a clean stool test - the yard is disinfected between groups and closed to adult dogs, which keeps disease risk far lower than a public park. The prime socialization window closes around 14 weeks, so waiting for the full series means missing it; the behaviour risk of a poorly socialized dog outweighs the small infection risk in a controlled class, and our doctors say so plainly. Each session pairs off-leash play with one skill: handling paws and ears, meeting a stranger politely, walking on unfamiliar surfaces like grates and tarps, hearing recorded thunder and traffic at low volume, and a cameo from a calm adult dog and a crated cat. Puppies that miss a week can join the next cohort's matching session at no charge. What to bring: a flat collar, a four to six foot leash - no retractables in class - and a pouch of pea-sized soft treats. Shy puppies are normal; we never force an interaction, and the trainer flags any puppy that would do better starting with a private session."
+        }
+      }
+    },
+    {
+      "id": "kn-dogs-dental-risks",
+      "parentId": "dogs",
+      "routable": false,
+      "title": "Dental risk by breed and size",
+      "props": {
+        "label": "Dental risk by breed and size"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Dental risk runs opposite to body size. Small breeds - Yorkshire terriers, chihuahuas, toy poodles, dachshunds - fit 42 teeth into a tiny jaw, so crowding traps plaque and periodontal disease starts early: most toy-breed dogs have measurable bone loss by age three, and daily brushing plus a first COHAT around age two or three is our standing advice for them. Retained baby teeth are also a small-breed specialty; if a puppy still has double fangs at six months we remove the baby teeth during the spay or neuter, since a doubled tooth traps hair and food against its adult neighbour. Greyhounds and other sighthounds carry heavy tartar genetics regardless of size. Large breeds have the reverse problem - fewer gum issues but more fractured teeth, because a 30 kg dog can crack a carnassial on the wrong chew. The rule of thumb we give: if you cannot dent it with a thumbnail, it can break a tooth - that includes antlers, hooves, hard nylon bones, and ice cubes. A fractured tooth with exposed pulp hurts even when the dog eats normally, so book it within days, not months. Flat-faced breeds like pugs and bulldogs combine crowding with rotated roots and usually need dental X-rays to find the real trouble; budget for a COHAT with extras from middle age onward."
+        }
+      }
+    },
+    {
+      "id": "kn-dogs-winter-paws",
+      "parentId": "dogs",
+      "routable": false,
+      "title": "Winter paw care and salt burns",
+      "props": {
+        "label": "Winter paw care and salt burns"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Cedar Grove winters are hard on paws, and most of the damage is preventable. Road salt is the main offender: it burns skin directly and dogs then lick it off, so rinse paws in lukewarm water after every salted walk and towel between the toes, or keep a shallow basin by the door. Ice balls form in the fur between pads on longhaired dogs - trim that fur level with the pads every few weeks and the balls stop forming. Paw balm applied before walks adds a barrier; boots work better still, and most dogs accept them within a week if each fitting session ends in treats and the first walks stay short. Watch the temperature: below minus 10 C keep walks under 20 minutes for most dogs, and below minus 20 shorten to bathroom breaks, especially for small, thin-coated, senior, or arthritic dogs - cold stiffens sore joints noticeably. Signs a walk has gone too long: lifting paws alternately, sudden limping, or stopping to chew at the feet. Cracked pads that bleed, any pad burn from de-icer, or limping that persists an hour after warming up deserve an exam. One more winter hazard: antifreeze tastes sweet and a few tablespoons can kill - clean any green driveway puddle immediately and treat a suspected lick as an emergency, not a wait-and-see."
+        }
+      }
+    },
+    {
+      "id": "kn-cats-vaccines",
+      "parentId": "cats",
+      "routable": false,
+      "title": "Cat vaccine schedule and products",
+      "props": {
+        "label": "Cat vaccine schedule and products"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Kitten series: FVRCP (rhinotracheitis, calicivirus, panleukopenia) at 8, 12, and 16 weeks, boosted at one year, then every three years for most adult cats. FeLV, the feline leukemia vaccine, is a two-dose series a month apart that we recommend for all young cats since lifestyle can change, then annually only for cats that go outside or live with an outdoor cat. Rabies is given at 16 weeks, boosted at one year, then every one to three years depending on the product; Ontario requires it even for indoor cats, because bats do find their way inside - we handle several such exposures every year. Adult cats with unknown history get FVRCP twice a month apart plus rabies. We stock low-volume, adjuvant-free feline products and give injections low on the limbs. A carrier sprayed with feline pheromone ten minutes before travel makes the whole visit noticeably calmer for everyone involved. Feline vaccine visits with a technician run 15 minutes and $28 plus the vaccine. Mild sleepiness for a day is normal; a pea-sized lump at an injection site that persists past a month, or grows past two centimetres at any point, needs an exam - we track injection sites on the chart deliberately for exactly this reason. Indoor-only status is worth stating at every visit so the doctor can trim the protocol to what the cat actually needs, and we send a portal reminder three weeks before anything comes due."
+        }
+      }
+    },
+    {
+      "id": "kn-cats-indoor-outdoor",
+      "parentId": "cats",
+      "routable": false,
+      "title": "Indoor versus outdoor risk tradeoffs",
+      "props": {
+        "label": "Indoor versus outdoor risk tradeoffs"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Indoor cats in our practice commonly reach 15 to 18 years; free-roaming outdoor cats average far shorter, with cars, coyotes along the Cedar Grove ravine, fights, and infectious disease doing most of the harm. Outdoor access is a real trade-off, not a moral failing - some cats are miserable inside - so we suggest middle paths: a screened catio, harness walks taught young, or supervised garden time ending before dusk, since dusk to dawn is when most trouble happens. Cats that do roam need annual FeLV boosters, year-round flea and tick prevention, a microchip, and a quick-release collar. For indoor cats, prevent the boredom that becomes obesity or spraying: vertical shelving, two litter boxes on different floors, food puzzles instead of a full bowl, one scratching post per cat plus a spare, and ten minutes of wand-toy hunting twice a day. Indoor cats still need annual exams - they hide illness expertly. A catio does not need to be grand: a 2 by 1 metre window box with two shelves satisfies most cats, and we keep a binder of local builds at the front desk plus the name of a Cedar Grove carpenter who makes them to order. Harness training works best started before six months, ten minutes at a time indoors first. GPS collars help find a roamer after the fact but prevent nothing - do not present them as a safety measure, because clients hear permission."
+        }
+      }
+    },
+    {
+      "id": "kn-cats-urinary",
+      "parentId": "cats",
+      "routable": false,
+      "title": "Male cat straining is an emergency",
+      "props": {
+        "label": "Male cat straining is an emergency"
+      },
+      "prompt": {
+        "slots": {
+          "constraints": "Treat any male cat straining in the litter box without producing urine as a life-threatening emergency, not a question to schedule. A urethral blockage can kill a cat in 24 to 48 hours as potassium climbs and the bladder risks rupture, and it is agonizing well before that. Advise the owner to go now - to us during open hours after calling 555-0132 so the team can prepare, or straight to Riverbend Emergency Veterinary Hospital at 44 Mill Rd, 555-0144, at any other time. Signs to take at face value: repeated trips to the box with nothing produced, crying while posturing, licking the genitals frantically, hiding, vomiting, or a firm painful belly. Do not suggest waiting to see, do not suggest cranberry products or diet changes for this presentation, and do not book a routine appointment. Female cats with the same signs are rarely blocked but still need same-day care. When in doubt, send them in. Time matters enough to say twice: a blocked cat seen within six hours usually does well; past 24 hours the kidneys and heart are in real danger. Typical costs help set expectations honestly - unblocking with two to three days of hospitalization commonly runs $1,500 to $2,800 at Riverbend - but the cost conversation happens after the cat is in the car, never as a reason to wait, and CareCredit is accepted at both buildings."
+        }
+      }
+    },
+    {
+      "id": "kn-cats-hairballs",
+      "parentId": "cats",
+      "routable": false,
+      "title": "Hairball management and warning signs",
+      "props": {
+        "label": "Hairball management and warning signs"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "The occasional hairball - a tubular wad of fur vomited a few times a month - is normal for a grooming animal, but frequency matters. Daily brushing removes fur before the cat swallows it; long-haired cats may need a slicker brush and a weekly comb-out, and heavily matted coats do better with a professional groom than scissors at home. Diet helps: fibre-added hairball formulas move fur through, a teaspoon of plain canned pumpkin works for some cats, and petroleum-based hairball pastes given twice weekly are safe lubricants - offered away from mealtimes so they do not block vitamin absorption. Book an exam if vomiting happens more than twice a month, if the vomit is food or liquid rather than fur, if the cat is retching without producing anything, or if grooming itself has increased - overgrooming can signal itch, pain, or stress, and frequent vomiting has a long list of causes that have nothing to do with fur. Two product notes clients ask about: the hairball diets we stock run $38 to $55 a bag and take three to four weeks to show a difference, and brush type matters more than brand - most cats tolerate a rubber curry brush first, then graduate to a slicker. Start brushing sessions at two minutes with a treat at the end. Shaving a healthy cat is rarely the answer; it stresses most cats more than a daily brushing habit ever would."
+        }
+      }
+    },
+    {
+      "id": "kn-cats-kitten",
+      "parentId": "cats",
+      "routable": false,
+      "title": "First-year plan and spay timing",
+      "props": {
+        "label": "First-year plan and spay timing"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "First-year plan for a new arrival: an initial exam within a week of adoption, stool testing and deworming, the FVRCP series finishing at 16 weeks, FeLV testing before introduction to resident cats, and rabies at 16 weeks. We recommend spay or neuter at five to six months, before the first heat - spaying before the first heat cuts mammary tumour risk to a fraction of the intact rate, and neutered males are far less likely to spray or roam. The prime socialization window closes around nine weeks of age, so gentle daily handling of paws, ears, and mouth, the carrier left open as furniture, brief car rides, and visitors of different ages pay off for life. Feed a growth-labelled food until 12 months, offer both wet and dry textures early, and place litter boxes where a small animal can always reach one. Pet insurance is cheapest to start now, before anything becomes pre-existing; ask us for a comparison sheet. A budget guide for the first year, before any plan discounts: exams and vaccines typically total $400 to $520, spay or neuter $290 to $360 with bloodwork, microchip $55. One fear-free tip that pays for a lifetime: bring the kitten hungry to every visit and let our staff feed the entire visit's treats - kittens that eat their way through early visits become adult cats that walk into carriers voluntarily and purr on the scale."
+        }
+      }
+    },
+    {
+      "id": "kn-cats-senior",
+      "parentId": "cats",
+      "routable": false,
+      "title": "Senior cat screening from age ten",
+      "props": {
+        "label": "Senior cat screening from age ten"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "From age ten we recommend twice-yearly exams with an annual senior panel - bloodwork, thyroid level, urinalysis, and blood pressure - because the big three of older cats, kidney disease, hyperthyroidism, and hypertension, all hide in plain sight. The classic trap is the senior cat that seems great: eating eagerly, active, maybe demanding food at 4 a.m. - and losing weight anyway. That combination is hyperthyroidism until proven otherwise, and it is very treatable. Weight loss in cats is gradual and fur hides it; we weigh at every visit, and a loss of ten percent, roughly half a kilogram in an average cat, is significant even when the cat seems well. Other subtle flags worth a call: drinking more, larger urine clumps, a louder nighttime yowl, stiff hops onto furniture, or unkempt fur along the spine. Early kidney disease managed with diet alone can add years; found late, the options narrow quickly. Practical home adjustments for stiff seniors: a litter box with one low side on every floor, night lights for aging eyes, and food dishes moved off high counters. The senior panel for cats is $210 and pairs with a blood pressure check done in a quiet room after the cat has settled for five minutes - a rushed reading runs falsely high. Report drinking changes precisely: counting water-bowl refills per week beats a general impression every time."
+        }
+      }
+    },
+    {
+      "id": "kn-cats-introductions",
+      "parentId": "cats",
+      "routable": false,
+      "title": "Multi-cat household introductions",
+      "props": {
+        "label": "Multi-cat household introductions"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "A new cat meeting a resident cat needs a slow-motion introduction, and the households that skip it are the ones calling us about spraying in month two. Start separated: the newcomer lives in one room with its own litter box, food, water, and hiding spots for at least a week - longer for shy cats - while the resident owns the rest of the home. Days one to seven are scent work: swap bedding daily, rub each cat with the same sock and leave it near the other's food, and feed on opposite sides of the closed door, moving bowls closer as both eat calmly. Next comes sight without contact: a baby gate draped with a towel lifted a little more each day, or a door propped two fingers wide, always paired with food or play. First face-to-face meetings are short, supervised, and end on a good note - a thrown treat beats a forced retreat. Hissing and flat ears are negotiation; flattened-body stalking, sustained growling, or any fight with fur flying means go back a full stage for several days. The average introduction takes two to four weeks; some pairs need two months, and rushing costs more time than it saves. House rule for any multi-cat home: one litter box per cat plus one, spread over more than one floor. Book a behaviour consult if there is no progress after six weeks."
+        }
+      }
+    },
+    {
+      "id": "kn-cats-carrier",
+      "parentId": "cats",
+      "routable": false,
+      "title": "Carrier training for calm visits",
+      "props": {
+        "label": "Carrier training for calm visits"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Most cat stress on clinic day is really carrier stress, and it trains away in a few weeks. Choose a hard-sided carrier that opens from the top as well as the front - a top loader turns a wrestling match into a lift - and one whose whole top half unclips, because our doctors can examine a calm cat sitting in its own familiar bottom half. Then make the carrier furniture: leave it out permanently in a corner the cat likes, door off or tied open, with soft bedding that smells like home. Feed meals progressively closer, then inside; toss treats in daily and walk away. Once the cat naps in it, practice closing the door for a minute, then carrying it to another room, then a parked-car sit, then a five-minute drive - one small step per session, treats at every stage. On appointment day: spray the bedding with feline pheromone ten minutes before leaving, carry the carrier from underneath like a cake rather than swinging it by the handle, cover it with a light towel, and belt it on the car floor behind the front seat where motion is gentlest. Skip breakfast if bloodwork is possible; a slightly hungry cat also cares more about our treats. Cats that arrive calm get better exams - blood pressure and heart rate readings included."
+        }
+      }
+    },
+    {
+      "id": "kn-cats-vomiting",
+      "parentId": "cats",
+      "routable": false,
+      "title": "Chronic vomiting deserves a workup",
+      "props": {
+        "label": "Chronic vomiting deserves a workup"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Vomiting more than twice a month is not a personality trait, whatever the internet says about cats being pukers - it is a symptom with a workup, and the earlier a pattern is taken seriously the simpler the answers tend to be. What the doctor will want, tracked for two weeks before the visit: how often and at what time of day, what comes up - food, liquid, fur, bile - how long after eating it happens, the full diet including treats and hunting habits, and the weight history; a photo of the vomit genuinely helps, undignified as that sounds. The stepwise workup we typically follow: an exam and baseline bloodwork with thyroid for cats over seven, around $240 to $310 together; a stool test; then, guided by results, an abdominal ultrasound at $350 to $450 or a strictly run eight-week diet trial on a hydrolyzed food. The common endpoints are food sensitivity, inflammatory bowel disease, thyroid disease, and early kidney trouble - most manageable for years when found early. Move faster than stepwise if red flags appear: weight loss, daily vomiting, refusing food for a day, lethargy, or repeated unproductive retching, which can mean an obstruction. Slow-feeder bowls and raised dishes help the gobble-and-regurgitate cat, but never let a gadget postpone a workup that keeps not happening."
+        }
+      }
+    },
+    {
+      "id": "kn-birds-housing",
+      "parentId": "birds",
+      "routable": false,
+      "title": "Cage sizing, temperature, kitchen hazards",
+      "props": {
+        "label": "Cage sizing, temperature, kitchen hazards"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Minimum cage sizes we recommend: budgies 60 by 40 by 40 cm with bar spacing near 1.2 cm; cockatiels 80 by 50 by 90 cm; conures 90 by 60 by 90 cm; African greys and Amazons at least 90 by 60 by 120 cm - and wider always beats taller, because birds fly horizontally. Perches should vary in diameter, natural wood beats dowel, and no perch belongs directly over food or water. Keep the room between 18 and 27 C, away from drafts, exterior doors, and heating vents; sudden chills stress birds more than steady cool. Two kitchen hazards deserve capital letters: overheated non-stick cookware and appliances release PTFE fumes that can kill a bird in minutes, and aerosols, scented candles, and smoke are nearly as bad - house birds away from the kitchen entirely. Provide 10 to 12 hours of dark, covered sleep, and rotate toys weekly rather than crowding the cage. Placement matters as much as size: one cage side against a wall makes birds feel sheltered, and the living room beats a spare bedroom - birds are flock animals that sicken in isolation. Avoid galvanized or rusted cages and hardware; zinc and lead cause slow poisoning, and hardware-store padlocks are a classic source. Grit is unnecessary for parrots and can impact budgies fed it freely. A bird-room thermometer with a daily minimum-maximum memory costs about $15 and removes all the guesswork."
+        }
+      }
+    },
+    {
+      "id": "kn-birds-diet",
+      "parentId": "birds",
+      "routable": false,
+      "title": "Pellet conversion and toxic foods",
+      "props": {
+        "label": "Pellet conversion and toxic foods"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "An all-seed diet is the single most common cause of illness we see in companion birds - it is the avian equivalent of living on chips. Target for most parrots: 60 to 70 percent formulated pellets, 20 to 30 percent vegetables and leafy greens, and seed as a treat under 10 percent, ideally reserved for training. Convert gradually over weeks - offer pellets in the morning when the bird is hungriest, mix them into shrinking seed portions, and weigh the bird weekly during any conversion, because birds will starve themselves rather than switch if pushed too fast. Safe daily produce: peppers, carrots, broccoli, leafy greens, small amounts of fruit. Never feed avocado, which is outright toxic to birds, nor chocolate, caffeine, alcohol, or salty snacks; onion and garlic are also unsafe. Budgies and cockatiels prone to obesity do best with measured portions. Fresh water changed daily, and any big dietary overhaul deserves a check-in with our avian team first. Weigh on a gram scale with a dowel perch zip-tied across it: a budgie should hold 30 to 40 grams, a cockatiel 80 to 110, and a loss over ten percent during conversion means slow down and call us. Wash produce, remove fresh food after four hours in summer heat, and skip grocery-store seed sticks - they are candy glued to cardboard. Sprouted seed is a healthy bridge food that many stubborn converts accept first."
+        }
+      }
+    },
+    {
+      "id": "kn-birds-illness",
+      "parentId": "birds",
+      "routable": false,
+      "title": "Fluffed sick bird needs same-day care",
+      "props": {
+        "label": "Fluffed sick bird needs same-day care"
+      },
+      "prompt": {
+        "slots": {
+          "constraints": "Birds hide illness until they cannot, so treat the classic sick-bird posture as urgent, never as something to watch: feathers fluffed for hours, tail bobbing with each breath, sitting on the cage floor, eyes closing during the day, or food untouched. A bird showing these signs should be seen the same day - advise the client to call 555-0132 and say the words sick bird so the team books them into the next available slot, and after hours send them to Riverbend Emergency Veterinary Hospital at 44 Mill Rd, 555-0144, with a call ahead. Do not troubleshoot diet or husbandry in the chat while these signs are present, and do not suggest heat lamps or home remedies as a substitute for the visit - warmth on the way in is fine, waiting overnight is not. A bird that seemed only quiet yesterday can be critical today; by the time a prey animal looks sick, it is usually very sick. Useful details to gather while arranging the visit, never instead of it: when the bird last ate, what the droppings look like and how many appeared overnight, any new cookware, candles, or paint fumes in the home this week, and the bird's last known weight in grams. Transport warm - a towel-wrapped bottle of hot tap water under half the carrier floor works well - keep the car quiet, and skip the radio entirely."
+        }
+      }
+    },
+    {
+      "id": "kn-birds-grooming",
+      "parentId": "birds",
+      "routable": false,
+      "title": "Wing, nail, beak services and prices",
+      "props": {
+        "label": "Wing, nail, beak services and prices"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Avian grooming runs Tuesday through Saturday by appointment; we keep Mondays for dog and cat grooming only. Services and current prices: nail trims $18, wing trims $22, beak assessment and shaping when medically indicated $30, and the nails-plus-wings combination $55 including a brief weight and body-condition check by a technician. Wing trims are a lifestyle decision, not a default - a proper trim removes the outer primaries symmetrically so the bird glides down safely rather than dropping, and we will talk through flight versus clipping at the first visit, since full flight is the right choice for many homes. Overgrown beaks are not normal wear-and-tear; they usually point at liver disease or malnutrition, so a first-time beak overgrowth gets a doctor exam, $95, before any shaping. Bring the bird in its own travel cage with an uncovered floor so we can check droppings. Squirmy birds are wrapped gently in a towel - it looks dramatic and is the safest restraint there is. Book two weeks ahead for Saturdays and three around holidays. A first grooming visit for a new bird pairs well with a weight baseline and a diet chat at no extra charge. Between visits, a concrete grooming perch placed as the second-highest perch keeps nails blunter on many birds - never sandpaper perch covers, which sand the feet rather than the nails. For a blood-feather accident at home: cornstarch, gentle pressure, and a call to us before anything else."
+        }
+      }
+    },
+    {
+      "id": "kn-birds-zoonoses",
+      "parentId": "birds",
+      "routable": false,
+      "title": "Psittacosis hygiene for bird households",
+      "props": {
+        "label": "Psittacosis hygiene for bird households"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Psittacosis, caused by Chlamydia psittaci, is the main disease people can catch from parrots, cockatiels, and budgies - in humans it looks like a stubborn flu with fever, headache, and a dry cough, and it responds well to antibiotics once diagnosed, so mention bird contact to your own doctor if you develop those symptoms. Infected birds may look ruffled and thin with watery green droppings, or look entirely healthy while shedding intermittently, which is why new birds should be examined and screened before joining a household flock. Sensible hygiene handles nearly all of the risk: wash hands after handling birds or cleaning cages, never clean a cage in the kitchen sink, dampen dried droppings before scraping so dust does not go airborne, and skip dry vacuuming around the cage. Pregnant people, and anyone immunocompromised or with chronic lung disease, should delegate cage cleaning. We offer psittacosis screening for $85 and require it for new boarders. Testing logistics: the screen is a swab plus a droppings sample sent out Monday through Thursday, with results back in five to seven business days - plan boarding paperwork around that lag. A positive is not a death sentence; treatment is a 45-day antibiotic course with a recheck test after. HEPA air purifiers help with the dust from powdery species like cockatiels and African greys, and they help the humans in the house at least as much as the birds."
+        }
+      }
+    },
+    {
+      "id": "kn-birds-boarding",
+      "parentId": "birds",
+      "routable": false,
+      "title": "Avian boarding room and requirements",
+      "props": {
+        "label": "Avian boarding room and requirements"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "We board birds in a dedicated avian room away from the sounds and smells of dogs and cats, kept at 21 to 24 C with a consistent daily light schedule and fresh produce every morning. The rate is $26 per night per cage, with a 15 percent discount on a second cage from the same household. Requirements: a wellness exam with us within the past 12 months, a negative psittacosis screen for first-time boarders, and the bird arrives in its own cage with familiar perches and toys - we do not supply housing, because a familiar cage is the best stress control there is. Bring the bird's regular food; a diet change during a stay is a recipe for trouble. Daily out-of-cage time can be arranged for hand-tame birds at no charge. Book through the front desk; the avian room holds eight cages and fills fast around school holidays, March break especially. Reserve with a one-night deposit; holiday weeks fill four to six weeks out. Drop-off runs 8 to 11 a.m. so birds settle before lunch, and pickup is before 5 p.m. Label everything, pack a two-day food surplus, and include the usual sleep cover if the bird uses one. We text a photo update every second day on request. Birds on daily medication board at $31 per night, dosing by a technician included."
+        }
+      }
+    },
+    {
+      "id": "kn-birds-molting",
+      "parentId": "birds",
+      "routable": false,
+      "title": "Molting - normal versus worrying",
+      "props": {
+        "label": "Molting - normal versus worrying"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Molting is the scheduled replacement of feathers, usually once or twice a year and often in late summer, and it looks alarming the first time: feathers on the cage floor, a scruffy pinstriped look, and a bird that is quieter, itchier, and shorter-tempered for two to six weeks. The key distinction from illness is that a molting bird still eats, perches upright, and keeps normal droppings - a fluffed bird sitting on the cage floor is sick, not molting. New pin feathers are living quills with a blood supply: they look like waxy spikes, they are tender, and a bird that suddenly hates head scratches mid-molt is being sensible, not moody. Help rather than hover: offer daily bathing - a shallow dish, a gentle mist, or a shower perch, whichever the bird prefers - raise dietary protein slightly with an egg-food supplement or a molt-formulated pellet, keep the room above 20 C since a molting bird insulates poorly, and let sleep stretch to a full 12 dark hours. Preen only where the bird invites it, rolling a ready pin feather's flaky sheath gently between two fingers. Call us if a molt drags past eight weeks, if feathers break off rather than shedding whole, if bald patches reach bare skin, or if the bird starts plucking - plucking is a medical workup, never just a phase to wait out."
+        }
+      }
+    },
+    {
+      "id": "kn-birds-eggbinding",
+      "parentId": "birds",
+      "routable": false,
+      "title": "Egg binding is an emergency",
+      "props": {
+        "label": "Egg binding is an emergency"
+      },
+      "prompt": {
+        "slots": {
+          "constraints": "Treat suspected egg binding as an emergency on the level of a blocked cat: a hen straining to pass an egg can die within hours from pressure on her kidneys and airways, and small birds - budgies, cockatiels, lovebirds - go downhill fastest. Take these signs at face value and send the client in now: a female bird straining or tail-bobbing on the cage floor, a wide-based penguin stance, a visibly swollen abdomen, sudden lameness or a dragging leg from nerve pressure, laboured breathing, or droppings that have stopped entirely. A hen does not need a mate to lay, so do not let the words she cannot be egg-bound, she lives alone end the conversation - solo hens lay infertile eggs routinely. During open hours have the client call 555-0132 and say suspected egg binding so we room her immediately; after hours it is Riverbend Emergency Veterinary Hospital, 44 Mill Rd, 555-0144, with a call from the road. For transport only: warmth and humidity are good first aid, so a towel-lined carrier resting over a warm water bottle is worth the two minutes it takes. Never advise pressing on the abdomen, applying oil, or lubricating anything - an egg cracked inside a hen is usually fatal. Chronic layers need a doctor conversation about light cycles, diet, and hormone options once the crisis has passed."
+        }
+      }
+    },
+    {
+      "id": "kn-birds-nightfrights",
+      "parentId": "birds",
+      "routable": false,
+      "title": "Night frights and prevention",
+      "props": {
+        "label": "Night frights and prevention"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Night frights are panic crashes in the dark - a bird startles off its perch and thrashes around the cage - and cockatiels are the classic victims, lutino and pied lines especially. Triggers are ordinary: headlights sweeping a wall, a mouse, a moth, a furnace click, a passing siren. The morning evidence is broken feathers, blood spots on perches or bars, and a subdued bird. What prevents them: a small night light of four to seven watts near the cage so the bird can orient, the cage moved away from windows that carry lights and shadows, a consistent 10 to 12 hour dark period so sleep runs deep rather than jumpy, and for some birds a half-covered cage - front draped, one side open toward the night light - rather than full blackout. During an episode, turn on a dim light, speak in a low steady voice, and wait for the bird to settle before opening the cage; grabbing a panicked bird in the dark multiplies the injuries. Afterwards check wings, feet, and the keel line for blood. A snapped blood feather that keeps bleeding needs cornstarch, gentle pressure, and a call to us; bleeding that does not stop within ten minutes, a dangling wing, or any limping is a same-day visit. Repeated frights despite the full checklist deserve a husbandry review with the avian team."
+        }
+      }
+    },
+    {
+      "id": "kn-rept-beardie",
+      "parentId": "reptiles-exotics",
+      "routable": false,
+      "title": "Bearded dragon UVB and temperatures",
+      "props": {
+        "label": "Bearded dragon UVB and temperatures"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Bearded dragon basics we repeat daily: UVB is non-negotiable. Use a 10.0 strength linear fluorescent tube spanning at least half the enclosure, mounted within 30 cm of the basking spot, and replace it every six months even though it still glows - UVB output decays long before visible light does, and a dead tube is the fastest route to metabolic bone disease. Temperatures: a basking surface of 38 to 42 C for adults, slightly warmer for juveniles, a cool end of 24 to 27 C, and a nighttime drop to around 21 C is fine without coloured night bulbs. Measure with a probe thermometer or infrared gun, not a stick-on dial. Diet shifts with age: juveniles eat mostly insects daily, while adults flip to roughly 70 percent greens with insects a few times weekly. Dust insects with plain calcium at most meals and a multivitamin with D3 once or twice weekly. Book a husbandry review with Dr. Osei if any of this is news. Substrate advice we stand behind: reptile carpet, slate tile, or paper for juveniles - loose sand risks impaction in young dragons that strike enthusiastically. A 120 by 60 by 60 cm enclosure is the adult minimum. Soak adults in shallow warm water weekly for hydration, and expect an appetite pause during autumn brumation cues even indoors. Bring your UVB tube to any visit: a $25 solarmeter reading at our desk tells you in ten seconds whether it is actually still alive."
+        }
+      }
+    },
+    {
+      "id": "kn-rept-snakes",
+      "parentId": "reptiles-exotics",
+      "routable": false,
+      "title": "Snake feeding cadence and shed issues",
+      "props": {
+        "label": "Snake feeding cadence and shed issues"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Feeding cadence scales with size and age: hatchling colubrids eat every five to seven days, adult corn and king snakes every seven to ten days, adult ball pythons every ten to fourteen days, and large boids stretch to several weeks. Prey should be about the width of the snake at mid-body, and we strongly recommend frozen-thawed over live - live rodents bite, and those bites abscess. Refusal during shed is normal: when the eyes turn cloudy blue, skip the meal and try again a few days after the shed completes. Ball pythons also fast seasonally, sometimes for months; track weight monthly, and a fasting adult holding its weight is a watch, not an emergency. Stuck shed, especially retained eye caps, means humidity is too low: add a humid hide with damp sphagnum moss, raise ambient humidity to 60 percent for a few days, and never pull shed or eye caps off dry. Two failed sheds in a row deserves an exam. Thaw frozen prey overnight in the fridge, then warm it in a sealed bag under warm tap water to just above room temperature - never a microwave, which cooks pockets that burn the snake's mouth. Feed inside the enclosure with tongs; the move-to-a-feeding-bin ritual stresses more snakes than it helps. After a meal, skip handling for 48 hours to protect digestion. Log every feed and every refusal with dates - the pattern is half the diagnosis when something does go wrong."
+        }
+      }
+    },
+    {
+      "id": "kn-rept-mbd",
+      "parentId": "reptiles-exotics",
+      "routable": false,
+      "title": "Metabolic bone disease signs and prevention",
+      "props": {
+        "label": "Metabolic bone disease signs and prevention"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Metabolic bone disease is the most common preventable illness we see in reptiles, and by the time it is obvious it is advanced. Early signs: a softening or sideways wobble of the jaw, kinks in the tail, bowed or swollen limbs, a shell going soft or pyramiding in turtles and tortoises, reluctance to climb, and tremors when reaching. Late signs are fractures from normal activity and a rubbery jaw that cannot close. The causes are almost always husbandry: no UVB or an expired bulb, calcium never dusted, all-meat or all-lettuce diets, temperatures too cool for digestion. Prevention is the same list run correctly - working UVB replaced every six months, plain calcium on insects, a species-appropriate diet, and a proper basking gradient. Caught early, MBD can be halted and partly reversed with husbandry correction and supplementation under a doctor's plan; bones that have already deformed stay deformed. A suspected case should be booked within the week and handled minimally and gently until then. Feeder insects deserve their own sentence: they are only as nutritious as their gut contents, so gut-load crickets and roaches for 24 to 48 hours on vegetables and a commercial loading diet before offering them. An X-ray series to stage suspected MBD runs $140 to $190 and genuinely changes the plan. Handle a fragile animal over a towel at counter height, supporting the whole body - a short fall breaks a soft bone."
+        }
+      }
+    },
+    {
+      "id": "kn-rept-turtles",
+      "parentId": "reptiles-exotics",
+      "routable": false,
+      "title": "Turtle water quality and salmonella rules",
+      "props": {
+        "label": "Turtle water quality and salmonella rules"
+      },
+      "prompt": {
+        "slots": {
+          "constraints": "Two rules govern every turtle conversation. First, water quality is welfare: most sick aquatic turtles we see are really husbandry cases, so before troubleshooting symptoms confirm the setup - a canister filter rated for at least double the tank volume, a 25 percent water change weekly, water at 24 to 27 C for sliders and painted turtles, a dry basking dock under a heat lamp at 32 to 35 C, and working UVB replaced every six months. A turtle that cannot get fully dry and warm will eventually develop shell rot or respiratory disease. Second, salmonella: assume every reptile carries it. Always advise washing hands with soap after handling turtles, their water, or their equipment; never wash tanks or docks in the kitchen sink; and keep turtles away from children under five, elderly household members, and anyone immunocompromised. Do not downplay either rule to be agreeable. Wheezing, bubbles from the nose, swollen eyes, or floating lopsided all mean a same-week exam. Numbers to hand out with confidence: a single adult slider needs a 350 litre tank or a pond - the hatchling in the palm becomes a dinner plate - and a liquid drop test kit for ammonia, nitrite, and nitrate belongs beside every tank, used weekly. Ammonia or nitrite above zero is a husbandry emergency to fix the same day. Feed adults in moderation: the pellets-daily habit from the pet store builds obese turtles by year three."
+        }
+      }
+    },
+    {
+      "id": "kn-rept-habitat",
+      "parentId": "reptiles-exotics",
+      "routable": false,
+      "title": "Heat and humidity gradients by species",
+      "props": {
+        "label": "Heat and humidity gradients by species"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Quick reference gradients we hand out, all daytime figures with basking at one end and the cool figure at the other. Bearded dragon: bask 38 to 42 C, cool 24 to 27, humidity 30 to 40 percent. Leopard gecko: warm hide 31 to 33 C on a thermostat-controlled heat mat, cool end 24, humidity 30 to 40 with a moist hide always available. Crested gecko: room temperature 22 to 26 C - above 28 is dangerous - humidity spiking to 80 percent with evening misting, drying to 50 by day. Ball python: hot spot 31 to 33 C, ambient 26 to 28, humidity 50 to 60. Corn snake: warm side 28 to 30, cool side 22 to 24, humidity 40 to 50. Red-eared slider: water 24 to 27, basking dock 32 to 35. Every heat source belongs on a thermostat, every reading comes from a probe rather than a dial, and gradients matter more than single numbers - the animal chooses its own temperature only if the enclosure actually offers a range. Two spending priorities when budgets are tight: the thermostat and the UVB bulb outrank all decor - a $40 thermostat prevents the burns and overheating losses we still see every summer. Add a digital hygrometer to every enclosure; humidity guesses run wrong more often than temperature guesses do. We will happily sanity-check any setup from phone photos at no charge before you buy a single replacement part."
+        }
+      }
+    },
+    {
+      "id": "kn-rept-brumation",
+      "parentId": "reptiles-exotics",
+      "routable": false,
+      "title": "Brumation versus illness - weigh weekly",
+      "props": {
+        "label": "Brumation versus illness - weigh weekly"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Brumation is the reptile version of winter dormancy, and telling it apart from illness is the whole game. Healthy brumation in species that do it - bearded dragons, many colubrid snakes, box turtles - looks like reduced appetite and long naps in the cool end starting in late fall, with weight holding steady. Illness looks similar, but the scale disagrees. Our standing advice: weigh weekly on a kitchen gram scale and log it. Weight loss under two or three percent across a month of dormancy is normal; steady loss beyond five percent, sunken eyes, wrinkled skin, mucus around the mouth, or a soft swollen belly means an exam, not more waiting. Before any planned brumation, a checkup and a stool test matter, because parasites that are trivial in summer can overwhelm a dormant animal. Keep water available throughout, drop the photoperiod gradually, and never brumate an underweight or first-year animal without talking to Dr. Osei first. When in doubt, weigh, write it down, and call us. Typical timelines help calibrate worry: bearded dragons brumate anywhere from two weeks to three months, colubrid snakes six to ten weeks, box turtles three to four months. Offer a warm weekly soak to species dormant inside their enclosure. On waking, appetite returns over one to two weeks, and the first meal should be small and easy. Compare wake weight against fall weight; more than five percent apart means bloodwork before resuming normal feeding."
+        }
+      }
+    },
+    {
+      "id": "kn-rept-referral",
+      "parentId": "reptiles-exotics",
+      "routable": false,
+      "title": "Exotic consults and Toronto referrals",
+      "props": {
+        "label": "Exotic consults and Toronto referrals"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Dr. Osei runs our exotic consult schedule on Tuesdays and Thursdays, seeing reptiles, amphibians, and other exotics for wellness exams, husbandry reviews, stool testing, and straightforward medical cases; a 30-minute consult is $110, and bringing photos of the enclosure - one wide shot plus close-ups of lighting, thermostat, and thermometer readings - saves half the appointment. Cases needing advanced imaging, surgery, or hospitalization beyond our setup are referred to the Avian and Exotic Centre in Toronto, our partner referral hospital; we send records ahead, and they typically see referred urgent cases within 48 hours, sooner by phone triage. Examples we refer routinely: egg binding not resolved medically, jaw fractures from advanced MBD, prolapses, and anything requiring anesthesia in an animal under 100 grams. For after-hours reptile emergencies, Riverbend Emergency Veterinary Hospital at 44 Mill Rd will stabilize any species overnight and coordinate a transfer in the morning. Book Tuesday and Thursday consults early; the exotic schedule fills a week or two out. Bring to any referral: a stool sample under 24 hours old, your supplement and bulb purchase dates, and the feeding log if one exists. The Toronto centre's consult fee is around $180, and imaging is quoted before any sedation. Transport reptiles warm - a hot water bottle under half the carrier - and skip the morning feed for any animal that might need sedation the same day."
+        }
+      }
+    },
+    {
+      "id": "kn-rept-gecko",
+      "parentId": "reptiles-exotics",
+      "routable": false,
+      "title": "Leopard gecko care essentials",
+      "props": {
+        "label": "Leopard gecko care essentials"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Leopard geckos are the beginner reptile we recommend most, and the setup that keeps them healthy is specific. Housing: a 60 by 40 by 30 cm enclosure minimum for one adult, with belly heat from a mat under one third of the floor on a thermostat holding the warm hide at 31 to 33 C, a cool end near 24, and three hides - warm, cool, and a moist hide with damp sphagnum that doubles as the shedding station. They are crepuscular, so intense lighting stresses them; low-level shade-dweller UVB is a worthwhile upgrade but must come with hiding options. Substrate: paper towel or textured tile for juveniles - never calcium sand, which they lick up and cannot pass. Diet is insects only: gut-loaded crickets, roaches, and black soldier fly larvae, dusted with plain calcium at most feeds and a D3 multivitamin weekly; mealworms are fine in rotation, waxworms are dessert. Juveniles eat daily, adults every second or third day, prey no longer than the space between the eyes. A healthy adult weighs 45 to 80 grams with a plump tail - the tail is the fuel gauge, and a thinning tail is the earliest sickness sign most owners can spot. Stuck shed on toes constricts and costs toes: check every shed under good light, and soak before it tightens."
+        }
+      }
+    },
+    {
+      "id": "kn-rept-water-testing",
+      "parentId": "reptiles-exotics",
+      "routable": false,
+      "title": "Aquatic turtle water testing routine",
+      "props": {
+        "label": "Aquatic turtle water testing routine"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Water chemistry is invisible, which is why we ask turtle owners to test rather than look. The weekly routine with a liquid drop kit - strips fade and mislead - covers four numbers. Ammonia: target zero; anything above 0.25 ppm burns skin and eyes and is the top cause of the swollen-eyed, wheezing turtles we see. Nitrite: target zero; above 0.5 ppm it interferes with oxygen transport. Nitrate: the end product of a working cycle; keep it under 40 ppm with water changes - a slowly rising nitrate line proves the filter bacteria are alive, while nitrate stuck at zero in an established tank means the cycle never started. pH: sliders and painted turtles do fine anywhere from 6.8 to 8.0, and chasing a perfect number causes more harm than holding a stable imperfect one. Practical rules that keep the numbers honest: feed in a separate container or scoop leftovers at five minutes, run a canister filter rated for at least double the tank volume, change 25 percent of the water weekly with dechlorinated water at tank temperature, and rinse filter media in removed tank water - never under the tap, which kills the colony doing the work. Log results with dates, and bring the log plus a fresh sample in a clean jar to any sick-turtle visit; it shortens the appointment and often solves the case."
+        }
+      }
+    },
+    {
+      "id": "kn-rept-impaction",
+      "parentId": "reptiles-exotics",
+      "routable": false,
+      "title": "Impaction risks and prevention",
+      "props": {
+        "label": "Impaction risks and prevention"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Impaction - a gut blockage of something indigestible - is one of the most common preventable reptile emergencies we admit. The classic causes: calcium sand and crushed walnut substrate licked up with every meal, loose coconut fibre swallowed mid-strike, gravel in turtle tanks sized exactly wrong for curious mouths, and prey or salad served too large or too cold for an animal whose basking spot cannot power digestion. Species patterns worth knowing: juvenile bearded dragons on sand, leopard geckos on the calcium sand marketed directly at them, chameleons swallowing soil from potted plants, and aquatic turtles with pea gravel. Prevention is cheap: solid or paper substrates for diggers and juveniles, feeding from a dish or tongs, prey no wider than the animal's head - for geckos, no longer than the space between the eyes - and basking temperatures verified with a probe, because digestion is temperature-dependent. Warning signs arrive in order: straining, fewer or no droppings for a week, a firm or swollen lower belly, dragging back legs in lizards, and finally food refusal. The correct response is a warm 20-minute soak and a doctor visit; repeated home laxative attempts and mineral oil are not, and belly massage can rupture what it means to move. X-rays confirm most cases, and caught early, many resolve medically without surgery."
+        }
+      }
+    },
+    {
+      "id": "kn-sm-gi-stasis",
+      "parentId": "small-mammals",
+      "routable": false,
+      "title": "Rabbit not eating is an emergency",
+      "props": {
+        "label": "Rabbit not eating is an emergency"
+      },
+      "prompt": {
+        "slots": {
+          "constraints": "A rabbit that has not eaten for more than 12 hours is an emergency - full stop. Rabbit digestion is a conveyor belt that must never stop moving; when it slows, gas and dehydration build, pain shuts appetite down further, and the spiral of GI stasis can kill within a day or two. Do not offer a wait-and-see answer for an anorexic rabbit, and treat these as equally urgent: no fecal pellets or tiny misshapen ones, hunching motionless in a corner, loud tooth grinding, a bloated or gurgling belly, or refusal of a favourite treat. During open hours have the client call 555-0132 and come straight in; after hours, Riverbend Emergency Veterinary Hospital, 44 Mill Rd, 555-0144, treats rabbits. The same urgency applies to guinea pigs off their food. Do not recommend home gas drops, forced feeding, or waiting overnight as an alternative to the visit - supportive care started early is the reason most stasis rabbits survive. Useful facts to collect while arranging the visit: the last time the rabbit ate or drank anything, the last normal droppings, any diet change this week, new stress such as construction noise or a new pet, and current medications. Keep the rabbit warm and quiet for transport in a towel-lined carrier, and bring the bonded partner along if one exists - separation adds stress at precisely the moment it does the most harm."
+        }
+      }
+    },
+    {
+      "id": "kn-sm-diet",
+      "parentId": "small-mammals",
+      "routable": false,
+      "title": "Hay-first diets and daily vitamin C",
+      "props": {
+        "label": "Hay-first diets and daily vitamin C"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Herbivore feeding is a pyramid with grass hay at the bottom. Rabbits and guinea pigs need unlimited grass hay - timothy or orchard - making up about 80 percent of intake; a body-sized pile daily is the visual we give owners. Alfalfa is for babies under six months and nursing mothers only, too rich for adults. Pellets are measured, not free-fed: roughly an eighth of a cup per kilogram of rabbit daily, and about one eighth of a cup total for an adult guinea pig, plain pellets only - no seed-and-fruit party mixes. Add a heaping cup of leafy greens per kilogram daily, introduced one vegetable at a time. Guinea pigs have a wrinkle that matters: like people, they cannot make their own vitamin C and need 25 to 50 mg daily, ideally as a plain tablet or C-fortified pellet rather than drops in the water bottle, which degrade quickly and change the taste. Hamsters and gerbils differ - ask us for the rodent handout. Safe daily greens to name confidently: romaine, green and red leaf lettuce, cilantro, dill, basil, and parsley in moderation. Skip iceberg, and treat fruit and carrot as candy - a thumb-sized piece daily at most. Sudden diet changes cause the stasis we warn about, so any hay or pellet switch happens gradually over a week. Fresh water in a heavy ceramic bowl beats a bottle; rabbits drink measurably more from bowls, and hydration protects the gut."
+        }
+      }
+    },
+    {
+      "id": "kn-sm-ferrets",
+      "parentId": "small-mammals",
+      "routable": false,
+      "title": "Ferret vaccines and adrenal signs",
+      "props": {
+        "label": "Ferret vaccines and adrenal signs"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Ferrets are legal in Cedar Grove and we see plenty. Vaccines: canine distemper - fatal to ferrets and airborne, so even indoor-only ferrets need it - as a kit series at 8, 11, and 14 weeks, then annually, always with a ferret-approved product; and rabies annually from 12 to 16 weeks with an approved ferret rabies vaccine. Ferrets are prone to vaccine reactions, so we ask you to wait in the clinic for 25 minutes after any injection. From age three, adrenal disease becomes common: watch for symmetrical hair loss starting at the tail and marching forward, intense itching without fleas, a swollen vulva in spayed females, difficulty urinating in males, and a return of musky sexual behaviours. It is manageable with implants or surgery, and earlier is cheaper and kinder. Annual exams until age four, then twice yearly - insulinoma and heart disease also stalk middle-aged ferrets, and both announce themselves quietly: rear-leg weakness, staring spells, naps that got longer. Ferret-proofing is part of preventive care: they compress through 3 cm gaps, and the blockages we operate on are usually foam, rubber, and hair elastics, so sweep the floors at ferret height monthly. Feed a kibble of at least 35 percent protein or a doctor-approved raw plan; fruit and dairy have no place in an obligate carnivore. Book the distemper series before the first pet-store outing, not after it."
+        }
+      }
+    },
+    {
+      "id": "kn-sm-dental",
+      "parentId": "small-mammals",
+      "routable": false,
+      "title": "Open-rooted teeth and molar trims",
+      "props": {
+        "label": "Open-rooted teeth and molar trims"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Rabbit, guinea pig, and chinchilla teeth grow continuously - open-rooted, a millimetre or more per week - and only chewing keeps them in check, which is one more argument for unlimited hay. When wear falls behind growth, molar spurs cut the tongue and cheeks. The signs owners actually notice: drooling or a chronically wet chin (the old name is slobbers), dropping half-chewed food, favouring soft foods, weight loss, fewer droppings, runny eyes from root pressure, and a jaw that feels lumpy along the bottom edge. Front incisor problems are visible, but molar problems hide - the mouth is too small and deep to inspect fully awake, so proper assessment takes a sedated oral exam. Molar trims are done under anesthesia with dental burrs, never clippers, which shatter teeth. Cost runs $280 to $380 including anesthesia, depending on findings, and animals with a tooth-root conformation problem usually need rechecks every few months for life. Prevention in one line: unlimited grass hay from weaning onward, because the 40 minutes of chewing per handful is the tooth-grinding these species evolved around; pellets and soft foods wear nothing. Wooden chew toys help attitude more than teeth - hay does the real work. At home, check weekly: run a finger along the lower jawline for bumps, watch the chew rhythm for one-sided grinding, and weigh monthly, since weight loss usually arrives well before drooling does."
+        }
+      }
+    },
+    {
+      "id": "kn-sm-housing",
+      "parentId": "small-mammals",
+      "routable": false,
+      "title": "Space minimums, temperatures, social pairing",
+      "props": {
+        "label": "Space minimums, temperatures, social pairing"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Space minimums we actually recommend, which run larger than pet-store defaults: a rabbit pen of at least 1.1 square metres with running room daily - a 120 by 60 cm cage is a bedroom, not a home; guinea pigs 0.7 square metres for one and a full square metre for a pair; hamsters a minimum 80 by 50 cm footprint of unbroken floor, because tube systems do not substitute for floor space. Temperatures: rabbits and guinea pigs are heat-fragile - keep them between 16 and 22 C and treat anything over 26 as dangerous, with frozen water bottles and fans in summer; chinchillas are stricter still, never above 24. Social pairing: guinea pigs should live in same-sex pairs or fixed pairs; rabbits bond intensely, but introductions need neutral territory and patience; Syrian hamsters are strictly solitary after five weeks old and will fight to injury. Wire floors cause pressure sores on feet everywhere - solid flooring with paper bedding, please. Bedding choice matters as much as square footage: paper-based bedding or fleece liners washed twice weekly are the safe defaults; cedar and untreated pine shavings release aromatic oils that irritate airways and livers, which is why we ask every wheezy-hamster owner about bedding first. Ammonia builds fast in corners - spot-clean daily, full change weekly. Daily floor time for rabbits and guinea pigs should total at least three hours outside the pen."
+        }
+      }
+    },
+    {
+      "id": "kn-sm-spay",
+      "parentId": "small-mammals",
+      "routable": false,
+      "title": "Rabbit spay prevents uterine cancer",
+      "props": {
+        "label": "Rabbit spay prevents uterine cancer"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "The statistic that changes minds: by age four, well over half of unspayed female rabbits - some studies put it near 80 percent by age five - develop uterine adenocarcinoma, a malignant cancer that spreads to the lungs. It is the leading killer of intact female rabbits, and it is entirely preventable with a spay we recommend between six months and two years of age, ideally before the first birthday; past two we still spay after bloodwork, the risk conversation just changes. Males benefit too: neutering at four to six months stops urine spraying, reduces mounting and cage aggression, and makes bonding a pair possible - and a bonded, fixed pair is the happiest way to keep rabbits. Rabbit anesthesia is a specialty skill; our protocols skip pre-surgical fasting (rabbits must never fast), use rabbit-specific drug combinations, and include syringe-feeding in hospital until the gut is moving. Rabbit spay $340, neuter $260, pain medication home with both. Surgery-day logistics: drop-off between 8 and 8:30 a.m. with breakfast already eaten - no fasting, ever - and a packed lunch of the animal's usual greens and hay for recovery, because familiar food restarts a gut faster than anything we stock. Most rabbits go home the same evening to quiet single-level housing for five days, no jumping. Call us if droppings have not restarted by the morning after surgery. Guinea pig spays and neuters are quoted case by case."
+        }
+      }
+    },
+    {
+      "id": "kn-sm-hamster-gerbil",
+      "parentId": "small-mammals",
+      "routable": false,
+      "title": "Hamster versus gerbil care",
+      "props": {
+        "label": "Hamster versus gerbil care"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Hamsters and gerbils share an aisle at the pet store and almost nothing else. Social life: Syrian hamsters are strictly solitary from five weeks and will fight to serious injury; gerbils are the opposite - a lone gerbil is a welfare problem, so keep them in same-sex pairs established young, and watch bonded pairs closely after any separation, because gerbils can reject a returning partner within days. Schedule: hamsters are nocturnal, and a hamster woken repeatedly by day becomes a biter; gerbils run in activity bursts around the clock and suit school-age observation far better. Housing: both need a minimum 80 by 50 cm of unbroken floor, but the furniture differs - hamsters want deep bedding of 20 cm or more for true burrowing and a solid-surface wheel of at least 20 cm for a Syrian, while gerbils are dedicated diggers needing 30 cm of diggable depth and a sand bath twice weekly, and they gnaw plastic to dust, so glass tanks with mesh tops outlast everything else. Diet runs similar - a measured tablespoon of quality mix daily plus tiny vegetable portions - but gerbils need less fat and no citrus. Lifespan: hamsters two to three years, gerbils three to four. Both hide illness; wet tail in a young hamster is a same-day emergency, not a Monday phone call."
+        }
+      }
+    },
+    {
+      "id": "kn-sm-flystrike",
+      "parentId": "small-mammals",
+      "routable": false,
+      "title": "Flystrike is a summer emergency",
+      "props": {
+        "label": "Flystrike is a summer emergency"
+      },
+      "prompt": {
+        "slots": {
+          "constraints": "Flystrike - myiasis - is a summer emergency you must treat with the same urgency as GI stasis. Flies lay eggs on soiled or damp fur, usually around a rabbit's rear, and hatched maggots eat into living skin within 12 to 24 hours; an affected rabbit can die of shock in a day. Any client who reports maggots, eggs like clumped grains of rice, a wet foul-smelling rear end, or a suddenly quiet rabbit in July heat gets one instruction: come now - 555-0132 during hours, Riverbend Emergency Veterinary Hospital, 44 Mill Rd, 555-0144, after. Do not advise bathing the rabbit and watching, do not suggest picking maggots off at home as the fix, and do not book this as a routine appointment - hidden maggots keep feeding while everyone feels reassured. Guinea pigs and elderly long-haired cats are candidates too. Prevention is where you can teach: flystrike targets animals that cannot keep themselves clean, so any rabbit with a chronically dirty bottom has an underlying problem - obesity, arthritis, dental pain, or a diet too rich to digest - that needs an exam in its own right. Daily rear checks from May through September, dry bedding, secured screens on outdoor hutches, and prompt attention to soft droppings are the whole defence. In summer, a wet rabbit bottom is never merely cosmetic."
+        }
+      }
+    },
+    {
+      "id": "kn-sm-bonding",
+      "parentId": "small-mammals",
+      "routable": false,
+      "title": "Bonding rabbit pairs properly",
+      "props": {
+        "label": "Bonding rabbit pairs properly"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Rabbits are happiest in bonded pairs, and bonding is a process with rules rather than an introduction over an afternoon. Both rabbits must be fixed first - hormones sink most bonds - and we suggest waiting four to six weeks after surgery for them to fade. Start in neutral territory neither rabbit claims: a bathroom or a penned hallway corner with two of everything - bowls, hay piles, and hides with two exits each. First sessions run 10 to 20 minutes daily; light chasing and mounting are negotiation, while fur-pulling or locked biting means separate immediately - a towel tossed over tussling rabbits parts them more safely than hands do. Between sessions, feed on opposite sides of a barrier so each associates the other with good things. Mirrored grooming - one rabbit licking the other's forehead - is the milestone that says the bond is forming; move to a thoroughly cleaned and rearranged shared space only after several calm sessions, and expect the whole process to take two weeks to two months. Trios are harder than pairs and deserve a phone chat first. When one of a bonded pair dies, many rabbits grieve visibly, and reduced eating is a medical risk in itself - watch closely and consider a new companion when the survivor seems ready. Never house rabbits with guinea pigs: one kick can be fatal, and they speak different languages."
+        }
+      }
+    },
+    {
+      "id": "kn-emerg-redflags",
+      "parentId": "emergencies-toxins",
+      "routable": false,
+      "title": "Red-flag symptoms - go now list",
+      "props": {
+        "label": "Red-flag symptoms - go now list"
+      },
+      "prompt": {
+        "slots": {
+          "constraints": "When any of the following appears, stop normal conversation and direct the client to emergency care immediately - our clinic during open hours after calling ahead, otherwise Riverbend Emergency Veterinary Hospital, 44 Mill Rd, 555-0144, open 24/7. The list: a large dog retching unproductively with a swelling belly (possible bloat or GDV - minutes matter); any seizure lasting over two minutes, or repeated seizures without full recovery between them; laboured breathing, open-mouth breathing in a cat, or blue or grey gums; collapse or inability to stand; a male cat straining without producing urine; uncontrolled bleeding or a wound exposing deeper tissue; suspected poisoning of any kind; heatstroke signs after exertion or a hot car; a distended painful abdomen; birthing trouble, meaning thirty minutes of hard straining without a delivery; and significant trauma such as a fall or vehicle strike, even if the animal seems fine, because internal bleeding hides. Do not soften these, do not offer appointment slots for them, and repeat the address and phone number. Delivery matters as much as the list: give the address and phone number in one short sentence, ask the client to call the hospital from the road, and offer to send the pet's record ahead if the patient is ours. If a client hesitates over money, name the payment options in one breath - CareCredit, insurance direct billing, written estimates - and return immediately to the instruction to go; the hesitation minutes are the expensive ones."
+        }
+      }
+    },
+    {
+      "id": "kn-emerg-toxins",
+      "parentId": "emergencies-toxins",
+      "routable": false,
+      "title": "Household toxin severity quick table",
+      "props": {
+        "label": "Household toxin severity quick table"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Severity guide for the calls we get most. Chocolate: darker is worse - baking chocolate and cocoa powder are dangerous at small amounts, dark chocolate at moderate ones, milk chocolate usually takes a lot; signs run vomiting, racing heart, tremors, seizures. Xylitol, found in sugar-free gum and some peanut butters: severe - even one or two pieces of gum can crash a small dog's blood sugar and injure the liver; always urgent. Grapes and raisins: unpredictable kidney failure in dogs at any amount - treat every exposure as serious. Onions, garlic, chives: damage red blood cells; risk builds with quantity and repeated exposure, and cats are more sensitive than dogs. Lilies and cats: true lilies - Easter, tiger, day, Asiatic - cause kidney failure from any part of the plant, even pollen groomed off fur; catastrophic, immediate care. Permethrin on cats: dog flea products applied to cats cause tremors and seizures; wash with dish soap and go. Every one of these warrants the toxinCheck tool and a phone call. Two more callers we get monthly: cannabis edibles cause wobbling, dribbling urine, and startle reactions in dogs - rarely fatal alone, but chocolate brownies compound the problem, and honesty with the vet speeds everything up with no judgment attached. Rodenticides are the delayed emergency: clotting failure surfaces two to five days after the box looked untouched, so a chewed corner counts as an exposure. Bring the packaging in both cases."
+        }
+      }
+    },
+    {
+      "id": "kn-emerg-first",
+      "parentId": "emergencies-toxins",
+      "routable": false,
+      "title": "Poisoning first aid - call first",
+      "props": {
+        "label": "Poisoning first aid - call first"
+      },
+      "prompt": {
+        "slots": {
+          "constraints": "First-aid rules you must hold firm on. Never advise inducing vomiting unless a veterinary professional has directed it for this specific case - some substances burn worse coming back up, some pets are too sedate to protect their airway, and hydrogen peroxide in cats is dangerous in itself. The correct sequence is always: call first - the clinic at 555-0132 during hours, Riverbend at 555-0144 after, or the poison hotline - report the animal's weight, the substance, the amount, and the time it happened, and let the professional decide. Run the toxinCheck tool for any suspected exposure and share its output rather than reasoning from memory. Tell clients to bring the packaging, the plant, or a photo of the label - the ingredient list changes the plan entirely. Do not suggest milk, salt, oils, or internet antidotes. Do not suggest watching overnight when a substance is on the serious list. If the product is on the skin or coat, washing with dish soap while arranging care is the one safe home step. One more firm line: activated charcoal is a clinic decision, never a home step - the dosing window and the aspiration risk make it a professional call. Keep the animal warm, confined, and observed while travelling, and when tremors or seizures are possible, a second person driving is worth the delay of finding one. Write down the timeline while it is fresh; treating veterinarians build the whole plan around it."
+        }
+      }
+    },
+    {
+      "id": "kn-emerg-afterhours",
+      "parentId": "emergencies-toxins",
+      "routable": false,
+      "title": "Riverbend after-hours hospital details",
+      "props": {
+        "label": "Riverbend after-hours hospital details"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Outside our hours - after 6 p.m. weekdays, after 2 p.m. Saturdays, and all day Sundays and holidays - emergencies go to Riverbend Emergency Veterinary Hospital, 44 Mill Rd, Cedar Grove, open 24 hours every day of the year, phone 555-0144. Call while driving there if possible so they can meet critical cases at the door. What to expect: triage on arrival, meaning the sickest animals go first and stable ones wait - waits of two to four hours on busy nights are normal for non-critical cases. Fees run higher than daytime clinic care: the emergency exam is around $180, and they present a written estimate before major treatment; stabilization of a critical case commonly runs $800 to $2,500, and they take CareCredit and all major insurance. Bring any medications the pet takes and packaging from anything eaten. Riverbend sends us records automatically the next morning, and we book follow-ups here - clients never need to call twice. What counts as stable enough to wait for us instead: a limp with weight-bearing, a single vomit with normal energy afterwards, a torn nail no longer bleeding - call our morning line at 7:45 and we hold same-day slots for exactly these. When in doubt at 2 a.m., phone Riverbend and describe what you see; their triage nurse will say honestly whether it can wait until 8."
+        }
+      }
+    },
+    {
+      "id": "kn-emerg-heatstroke",
+      "parentId": "emergencies-toxins",
+      "routable": false,
+      "title": "Heatstroke signs and cooling protocol",
+      "props": {
+        "label": "Heatstroke signs and cooling protocol"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Heatstroke starts earlier than people think - a warm day, a parked car, a fetch session at noon. Signs in order of escalation: frantic panting, thick ropey drool, brick-red gums, wobbling or glassy eyes, vomiting or diarrhea, collapse, seizures. Flat-faced breeds - bulldogs, pugs, Boston terriers, Persians - overheat at temperatures other animals tolerate easily, as do overweight, senior, and thick-coated pets; treat their warm-weather complaints with extra caution. The protocol we give: move to shade or air conditioning, wet the body with cool - not ice-cold - water, especially the belly, armpits, and paws, aim a fan at the wet fur, offer small sips of water without forcing, and drive to a vet with the windows down or the AC on. Do not use ice baths - they clamp surface vessels shut and trap the heat inside. Every genuine heatstroke needs an exam even after the pet seems recovered, because the dangerous clotting and organ complications surface hours later. Prevention numbers worth repeating all summer: a parked car at 24 C outside reaches 38 inside within 30 minutes, cracked windows included; midday asphalt can hit 60 and burns pads in under a minute - use the seven-second back-of-hand test before any walk. Shift exercise before 9 a.m. in July and August, and remember that brachycephalic dogs can overheat on humidity alone at 26 C in the shade."
+        }
+      }
+    },
+    {
+      "id": "kn-emerg-hotline",
+      "parentId": "emergencies-toxins",
+      "routable": false,
+      "title": "Poison control hotline and case numbers",
+      "props": {
+        "label": "Poison control hotline and case numbers"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "For poisonings, the Animal Poison Control hotline at 1-888-555-0199 operates 24/7 with veterinary toxicologists on staff. The consult fee is about $95 USD, charged by card at the start of the call - worth every cent, because for many substances they can calculate that a dose is trivial and save an unnecessary emergency visit, or the reverse. Have ready before dialing: the animal's species, weight in kilograms, the exact product name from the packaging, the concentration or ingredient list, the largest amount that could have been eaten, and how long ago it happened. The hotline issues a case number; give that number to us or to Riverbend, because the treating veterinarian can call back on the same case for detailed treatment guidance at no extra charge. When a client cannot manage the hotline fee, do not improvise toxicology - run the toxinCheck tool, and when it flags a serious ingredient, direct them straight to Riverbend at 555-0144. A timing note that surprises people: for many toxins the useful treatment window is under two hours, because inducing vomiting or giving charcoal only helps before absorption - calling before symptoms appear is the smart move, not an overreaction. Keep the number on the fridge; we hand out magnets at the desk. The hotline covers every species we see, birds and reptiles included."
+        }
+      }
+    },
+    {
+      "id": "kn-emerg-seizure",
+      "parentId": "emergencies-toxins",
+      "routable": false,
+      "title": "Seizure first response script",
+      "props": {
+        "label": "Seizure first response script"
+      },
+      "prompt": {
+        "slots": {
+          "constraints": "Seizure calls follow a script you must not improvise past. During the seizure: do not put hands near the mouth - pets do not swallow their tongues, but clamping jaws break fingers; move furniture away rather than moving the pet, unless it is on stairs or near water, in which case slide it by the hips on a blanket; kill bright lights and noise; and time it by the clock, because a minute of convulsing feels like ten. Most seizures stop within 60 to 90 seconds. Direct to emergency now if: a seizure passes two minutes, a second one arrives before full recovery, breathing looks wrong afterwards, the pet is a small breed or a diabetic on insulin, a toxin is possible - or it is a first-ever seizure in a cat. A single short seizure with full recovery in a known epileptic can wait for us in the morning, but log it in the record. After any seizure, expect the post-ictal phase: pacing, temporary blindness, ravenous hunger, clinginess, lasting minutes to hours - keep the pet in one quiet room and off the stairs. What helps the doctor most: a phone video, the exact time and length, anything eaten in the last day, and household products within reach. Never advise an extra dose of seizure medication unless the doctor has pre-approved a rescue protocol for exactly this situation."
+        }
+      }
+    },
+    {
+      "id": "kn-emerg-wounds",
+      "parentId": "emergencies-toxins",
+      "routable": false,
+      "title": "Wound care dos and don'ts",
+      "props": {
+        "label": "Wound care dos and don'ts"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Wound care advice we give while the client heads in. Dos: control bleeding with firm direct pressure through a clean cloth for a full five minutes without peeking - lifting the cloth restarts the clock; flush fresh shallow scrapes with lukewarm water or saline; keep the pet from licking with a cone, a sock over a limb, or a t-shirt over a torso wound - a dog's mouth is not clean, whatever the old saying claims; and photograph the wound before covering it, which helps our triage enormously. Don'ts: no hydrogen peroxide, alcohol, or tea tree oil, which damage the very tissue that must heal; no human antibiotic ointments that get licked off in a minute; no tourniquets; and never remove an object that is stuck deep - a penetrating stick or metal shard stays where it is, stabilized with bandage wrapped around it, until a doctor removes it with imaging on hand. What needs professional care regardless of size: any bite wound, because punctures seal over crushed tissue and abscess within days; anything on the chest or belly; anything deeper than the skin surface; burns; and any wound crossing a joint. Timing matters: wounds older than six to eight hours often cannot be stitched and must heal open, which takes weeks longer. When in doubt, cover it and come in - a wound recheck is cheap compared with an infected regret."
+        }
+      }
+    },
+    {
+      "id": "kn-emerg-string",
+      "parentId": "emergencies-toxins",
+      "routable": false,
+      "title": "String swallowing in cats",
+      "props": {
+        "label": "String swallowing in cats"
+      },
+      "prompt": {
+        "slots": {
+          "constraints": "String and a cat is a surgical emergency wearing a cute face, and your script is firm. Thread, ribbon, tinsel, dental floss, fishing line, and elastic cord all behave the same way inside a cat: one end anchors - often around the tongue base - while the gut tries to move the rest, and the string saws through the intestine like a cheese wire. Never advise pulling a string that is visible at either end, mouth or rear, not even gently, and say why in plain words: pulling tightens the saw. If string dangles from the rear, it may be snipped level with the body, nothing more. A witnessed or suspected swallow goes to a vet the same day even when the cat seems perfectly fine - the damage takes one to three days to declare itself, and by the time vomiting, a hunched posture, and food refusal arrive, the surgery is bigger and riskier. Check under the tongue at home only if the cat allows a calm look; do not fight for one. During hours call us at 555-0132; after hours it is Riverbend, 44 Mill Rd, 555-0144. Gift ribbon, December tinsel, and open sewing kits are the classic sources - the prevention message is lidded sewing boxes and no string toys without supervision. Kittens and ferrets have earned exactly the same caution."
+        }
+      }
+    },
+    {
+      "id": "kn-meds-policy",
+      "parentId": "medications-pharmacy",
+      "routable": false,
+      "title": "Every dose comes from medDose",
+      "props": {
+        "label": "Every dose comes from medDose"
+      },
+      "prompt": {
+        "slots": {
+          "constraints": "The dosing rule has no exceptions: every medication dose is weight-based and comes from the medDose tool, never from memory, a website, or a previous prescription for another animal. Before quoting any dose you must have both the animal's current weight in kilograms - measured, not guessed, and re-weighed if the last recorded weight is more than three months old - and a medDose result for that species, that drug, and that strength. Verify species every single time: drugs that are routine in dogs can be lethal in cats, rabbits metabolize differently again, and birds and reptiles dose by the gram. If the tool is unavailable or returns no entry, say plainly that you cannot provide a dose and offer a callback from the medical team. Never adjust, round up, or extrapolate a dose, never advise splitting unscored tablets, and never approve doubling up after a missed dose - the safe answer for a missed dose is drug-specific and comes from the doctor. The weight rule has a practical answer built in: our lobby scale is free during any open hours, no appointment needed - walk in, weigh, and the number goes straight onto the chart. For wriggling cats and small mammals, weigh yourself holding the pet on a home scale and subtract, then confirm on ours at the next visit. Doses in multi-pet homes are per animal, never shared bottles, even for littermates on the same drug."
+        }
+      }
+    },
+    {
+      "id": "kn-meds-nsaid",
+      "parentId": "medications-pharmacy",
+      "routable": false,
+      "title": "Never give human pain relievers",
+      "props": {
+        "label": "Never give human pain relievers"
+      },
+      "prompt": {
+        "slots": {
+          "constraints": "Human pain relievers are the most common serious poisoning we see, so this warning is always worth repeating: never give ibuprofen (Advil, Motrin), naproxen (Aleve), or acetaminophen (Tylenol) to a pet, in any amount, for any reason. In dogs, ibuprofen causes stomach ulcers at low amounts and kidney failure a little higher; naproxen is worse still. Cats are far more vulnerable - a single regular-strength acetaminophen tablet can kill an adult cat by destroying the ability of its red blood cells to carry oxygen, and there is no such thing as a safe feline amount. If a client mentions they already gave a human pain reliever, treat it as a poisoning: get the drug name, strength, amount, and time, run the toxinCheck tool, and direct them to care now rather than watching for symptoms, because the damage starts before signs show. When a pet is in pain, the message is: we have safe veterinary options - book today, and meanwhile give nothing from the medicine cabinet. Extend the same caution to decongestants, cold-and-flu combinations, and anything labelled PM - pseudoephedrine and diphenhydramine overdoses arrive monthly, and medicated creams licked off skin count as doses too. The safe-cabinet message in one sentence: nothing human goes into a pet unless a veterinarian named that drug, that strength, and that animal on this specific occasion."
+        }
+      }
+    },
+    {
+      "id": "kn-meds-antibiotics",
+      "parentId": "medications-pharmacy",
+      "routable": false,
+      "title": "Finish courses, no sharing, rechecks",
+      "props": {
+        "label": "Finish courses, no sharing, rechecks"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Three house rules for antibiotics. Finish the course: the full number of days on the label, even when the pet looks fine by day three - stopping early breeds resistant bacteria and invites a relapse that is harder and costlier to treat. No sharing and no leftovers: an antibiotic chosen for one infection in one species at one weight is not transferable, leftover amounts are by definition incomplete courses, and a cabinet stash tempts exactly the kind of guessing that lands pets in hospital - return extras to us and we dispose of them properly at no charge. Rechecks before refills: recurring infections - ears, skin, bladder - are usually a sign that something upstream needs attention, from allergies to bladder stones, so repeated refills without a recheck exam treat the symptom while the cause digs in. Our doctors follow a recheck schedule per condition, typically $65, and skin and ear cases may include cytology so the drug actually matches the bug. Practical compliance help we offer freely: dosing charts for the fridge, phone-alarm schedules set up at pickup, and pill pockets or a compounded liquid when tablets become a nightly wrestling match - ask before giving up, because an abandoned half-course is the worst outcome of all. Probiotic support during antibiotics is reasonable for dogs with soft stool; separate it from the antibiotic dose by two hours."
+        }
+      }
+    },
+    {
+      "id": "kn-meds-fleatick",
+      "parentId": "medications-pharmacy",
+      "routable": false,
+      "title": "Flea products by species and weight",
+      "props": {
+        "label": "Flea products by species and weight"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Flea and tick products are chosen by species first and weight band second, and both matter enormously. The species rule that saves lives: permethrin-based dog products - many popular spot-ons and sprays - are fatal to cats, causing tremors and seizures even from secondary contact like grooming a treated housemate dog; homes with both species should use feline-safe products on the dog or keep the animals separated until the application dries completely. Weight bands are not suggestions: a large-dog dose split between two small dogs, or a small-dog dose on a large dog, gives one animal too much and the other useless protection. Choose by the animal's current measured weight, and re-weigh puppies and kittens before every monthly application because they outgrow bands quickly. We carry prescription oral and topical options for dogs, cats, and rabbits - never use fipronil on rabbits - and the right choice depends on lifestyle: tick exposure, swimming, children in the home. Ask us to match one. Application technique fixes half the failures we hear about: part the fur and dose the skin, not the hair, at the base of the skull; no bathing 48 hours before or after a topical; and write the date on the calendar, because doses that drift late by a week each month eventually lapse entirely. Chewable products absorb best with a meal - given fasted, protection drops noticeably for some of them."
+        }
+      }
+    },
+    {
+      "id": "kn-meds-refills",
+      "parentId": "medications-pharmacy",
+      "routable": false,
+      "title": "Refill notice, pickup, controlled meds",
+      "props": {
+        "label": "Refill notice, pickup, controlled meds"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Refill logistics: request at least 24 hours ahead - a doctor must review every refill, and same-day requests often cannot be honoured. The fastest route is the e-request through the client portal or the refill line at 555-0132 extension 2, with the pet's name, the medication, and the strength. Pickup is at the front desk during regular hours: Monday to Friday 8 a.m. to 6 p.m., Saturday 9 a.m. to 2 p.m.; we hold prepared refills for 14 days before restocking them. Controlled medications - gabapentin, tramadol, phenobarbital, and similar - carry extra rules: in-person pickup by the listed owner with photo ID, no early refills, and a recheck exam at intervals the doctor sets, typically every six months. Most maintenance medications require an exam within the past 12 months to stay active; if a pet is overdue, we flag it at request time so you can book before the bottle runs dry. Written prescriptions for outside pharmacies are available for $15. Two logistics notes that save trips: we text when a refill is actually ready rather than promising a clock time, and standing refills can be scheduled monthly for chronic medications so the doctor review happens before you think to ask. Insulin, insulin syringes, and anything refrigerated wait in the fridge until you arrive - tell the desk you are en route and the bag meets you at the counter."
+        }
+      }
+    },
+    {
+      "id": "kn-meds-compounding",
+      "parentId": "medications-pharmacy",
+      "routable": false,
+      "title": "Flavored compounding for difficult patients",
+      "props": {
+        "label": "Flavored compounding for difficult patients"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "When a pet will not take a medication in its stock form, compounding usually solves it. We partner with Orchard Compounding Pharmacy on King St, which prepares custom formulations to our prescriptions: fish- or chicken-flavoured liquids for cats, fruit-flavoured suspensions for rabbits and guinea pigs, micro-dosed capsules for birds and reptiles dosed by the gram, and transdermal gels - rubbed inside a cat's ear - for the small set of drugs that absorb through skin, methimazole for hyperthyroid cats being the everyday example. Turnaround is typically two to three business days with free delivery to the clinic, or courier to your home for $8. Compounded prices vary by drug, and the pharmacy quotes before making anything. Two honest caveats we always give: compounded drugs are custom-made rather than factory-standardized, so we use them when the standard form has failed or is impossible, and shelf lives run shorter - note the beyond-use date on the label and store exactly as directed. A timing tip: request compounds a week before the current bottle runs out, since the turnaround stretches around holidays. Flavour matters more than owners expect - cats accept fish or chicken, rabbits favour banana, and ferrets famously choose a salmon paste - and the pharmacy re-flavours a refused batch once at no charge. Report any texture or smell change to us before dosing from a new batch; consistency is the quality control you can see."
+        }
+      }
+    },
+    {
+      "id": "kn-meds-insulin",
+      "parentId": "medications-pharmacy",
+      "routable": false,
+      "title": "Insulin storage and handling",
+      "props": {
+        "label": "Insulin storage and handling"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Insulin is fragile, and half of diabetic-pet troubleshooting turns out to be handling rather than disease. Storage: refrigerated at 2 to 8 C, never frozen, never left in a hot car - a bottle that froze or cooked goes in the bin even when it looks normal, and most veterinary insulins are discarded 28 to 60 days after first puncture depending on the product, so write the opening date on the label in marker. Mixing: roll the vial gently between your palms ten times; shaking froths and inactivates some formulations. Syringes are not interchangeable - U-40 insulin drawn in U-100 syringes delivers two and a half times the intended dose, a mistake we see after online syringe purchases, so buy syringes from us or confirm the number on the box matches the bottle. Injections go under a tent of loose flank or scruff skin, rotating sites, always after the pet has eaten - if the meal is refused or vomited, call us before dosing rather than guessing at a half dose. Never repeat a dose because some leaked or the pet flinched; a partial dose plus a full dose is an overdose. Low blood sugar signs - wobbling, glassy eyes, trembling, collapse - mean rub corn syrup on the gums and call an emergency line immediately. Keep a spare unopened vial on hand and check its expiry monthly."
+        }
+      }
+    },
+    {
+      "id": "kn-meds-drops",
+      "parentId": "medications-pharmacy",
+      "routable": false,
+      "title": "Ear and eye drop technique",
+      "props": {
+        "label": "Ear and eye drop technique"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Technique determines whether drops work at all, so we demonstrate at pickup and repeat it here. Ears: hold the flap up and out to straighten the canal, place the prescribed number of drops or the measured squeeze down the canal opening, then massage the cartilage at the jaw hinge until it squelches for a count of 20 - that squelch is the medication reaching the horizontal canal where infections actually live. Let the pet shake afterwards, wiping only what reaches the flap; cotton swabs pack debris deeper and never belong inside a canal. Use a cleaner only when the doctor prescribes one, typically 30 minutes before medicated drops, not after them. Eyes: approach from behind and above so the pet never watches the bottle arrive, steady your hand on the forehead, pull the lower lid down to make a pocket, and land the drop without the tip touching anything - a touched tip contaminates the whole bottle. One drop is enough; the eye holds no more. When two eye medications overlap, separate them by five minutes, and ointments always go last. Reward instantly after every single administration - pets that get a treat after drops stop hiding by day three. If a course is truly impossible at home, say so honestly: technician-administered visits can be scheduled, and longer-acting alternatives exist for some infections."
+        }
+      }
+    },
+    {
+      "id": "kn-meds-storage",
+      "parentId": "medications-pharmacy",
+      "routable": false,
+      "title": "Parasite product storage rules",
+      "props": {
+        "label": "Parasite product storage rules"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Parasite products fail quietly when stored badly, and the failures show up as fleas in February. Chewables and tablets: room temperature between 15 and 25 C, kept in the original blister or bottle - not a family pill organizer, which is exactly how human medications end up in dogs; the garage and the car fail the temperature rule for most of the year. Topical spot-ons: same range, kept in the carton so the dose dates on the flap stay with the tubes, and never near a stove or on a sunny windowsill, since heat separates the carrier from the active ingredient. Do not decant anything into other containers. Child and pet safety is a storage rule too: beef-flavoured chewables read as treats to dogs, and a dog that eats a six-pack has taken six months of medication in one sitting - that is an immediate call to us or the poison hotline with the box in hand, never a wait-and-see. Keep dog and cat products on different shelves entirely; the permethrin catastrophe usually starts with two similar boxes side by side in one cupboard. Check expiry dates when the seasons change, and bring expired or leftover product to us for disposal at no charge rather than binning or flushing it. A cool kitchen cupboard with a child latch satisfies every rule in this paragraph."
+        }
+      }
+    },
+    {
+      "id": "kn-svc-hours",
+      "parentId": "clinic-services",
+      "routable": false,
+      "title": "Hours, address, parking, phone",
+      "props": {
+        "label": "Hours, address, parking, phone"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Cedar Grove Veterinary Clinic is at 210 Orchard Lane, Cedar Grove, Ontario, on the corner of Orchard Lane and Birch St - the brick building with the green awning. Free parking in our lot off Birch St, including two accessible spots beside the ramp door, and street parking on Orchard Lane is free for two hours. Hours: Monday to Friday 8 a.m. to 6 p.m., Saturday 9 a.m. to 2 p.m., closed Sundays and statutory holidays. Phone 555-0132 - reception answers from 7:45 a.m. on weekdays; after hours the line plays emergency instructions and directs urgent calls to Riverbend Emergency Veterinary Hospital. Doctor availability varies: Dr. Whitfield practises Monday through Friday, Dr. Tran covers Wednesday through Saturday, and Dr. Osei sees exotics on Tuesdays and Thursdays. Drop-off appointments are available from 8 a.m. for established patients. Food and medication pickup runs any time we are open, no appointment needed; call ahead and we will have it bagged at the desk. Getting here without a car: the number 4 bus stops at Orchard and Birch, a two-minute level walk, and there is a bike rack beside the ramp door. The building is wheelchair accessible throughout, exam rooms included. Statutory holiday closures post two weeks ahead on the door, the website, and the phone greeting, and the Saturday before a long weekend is our busiest morning of the month - book ahead for it."
+        }
+      }
+    },
+    {
+      "id": "kn-svc-appointments",
+      "parentId": "clinic-services",
+      "routable": false,
+      "title": "Visit types - use apptSlots tool",
+      "props": {
+        "label": "Visit types - use apptSlots tool"
+      },
+      "prompt": {
+        "slots": {
+          "constraints": "Booking rules: always check real availability with the apptSlots tool before offering any time, and never invent or assume an opening - if the tool is down, take the request and promise a callback rather than guessing. Visit types and lengths so you book the right block: wellness exam 30 minutes; sick visit 30 minutes; recheck 15 minutes; vaccine-only visit with a technician 15 minutes; new-client first visit 45 minutes; new-exotic consult with Dr. Osei 30 minutes, Tuesdays and Thursdays only; behaviour consult 60 minutes; euthanasia 45 minutes, booked at the end of the day with the comfort room, and handled with extra gentleness in every message. Same-day sick slots are held each morning and released at 8 a.m. - urgent-sounding but non-emergency cases should phone at opening rather than book online. Confirm species, pet name, and reason at booking, flag any aggression history so we can plan the room, and remind cat owners that a carrier is required. Telemedicine recheck slots exist for established patients at the doctor's discretion - offer them for medication progress checks and mobility follow-ups, never for new problems, which need hands on the animal. Book anxious dogs into the first slot after lunch when the lobby is quietest, and note thunder-phobic dogs so we avoid rooming them during storms. Every confirmation goes out by text with a portal link attached."
+        }
+      }
+    },
+    {
+      "id": "kn-svc-boarding",
+      "parentId": "clinic-services",
+      "routable": false,
+      "title": "Boarding requirements - verify space first",
+      "props": {
+        "label": "Boarding requirements - verify space first"
+      },
+      "prompt": {
+        "slots": {
+          "constraints": "Boarding requirements are non-negotiable because they protect every animal in the building. Dogs: current DHPP, rabies, and bordetella - bordetella within the past 12 months and at least five days before arrival - plus a negative fecal test in the past six months and current flea and tick prevention. Cats: current FVRCP and rabies, with the same fecal and parasite prevention rules. Birds: a wellness exam with us in the past 12 months and a psittacosis screen for first-time boarders. Reptiles and small mammals are boarded case by case after a husbandry conversation. Always verify space with the boardingAvailability tool before promising anything - do not guess at holiday capacity, which sells out weeks ahead for Christmas, March break, and summer long weekends. Rates: dogs $48 per night, cats $32, birds $26, small mammals $22, with a 15 percent multi-pet discount. Unvaccinated or overdue pets must complete requirements before check-in; there are no exceptions, including for long-time regulars. Check-in runs 8 to 11 a.m. and checkout is by noon to avoid an extra night's charge. Medication administration is included for boarders; insulin-dependent pets board only when a doctor is on site the following morning, so flag them at booking time. Personal bedding is welcome when it is washable, and we send a photo update on day two of any stay longer than three nights."
+        }
+      }
+    },
+    {
+      "id": "kn-svc-grooming",
+      "parentId": "clinic-services",
+      "routable": false,
+      "title": "Grooming menu and species schedule",
+      "props": {
+        "label": "Grooming menu and species schedule"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Grooming menu, with dog prices varying by size and coat and quoted exactly at booking: bath, brush-out, nails, and ear cleaning from $65 for small dogs to $110 for giants; full groom with haircut $95 to $150; de-shedding treatment add-on $25; nail trim alone $22, or $15 when added to any other visit. Cats: bath and brush-out $75, lion cut for matted coats $130 including a sedation assessment - heavily matted cats are often more comfortable clipped under light sedation with a doctor present, which we discuss honestly rather than forcing a struggle. Bird and reptile grooming - wing trims, nail trims, beak work - runs Tuesday through Saturday only; Mondays are reserved for dogs and cats. Our groomer, Priya, works Monday to Saturday from 9 a.m., and grooming clients must be current on rabies (dogs and cats) and flea prevention. Book two weeks out for weekends, and send photos of matted coats ahead so we slot the right amount of time. A standing every-six-weeks slot is the cheapest way to keep a doodle coat honest, and standing clients get 48 hours of priority notice if Priya is away. First grooms for puppies are half price before six months - a short, treat-heavy introduction that buys years of easy grooming afterwards. Matted-coat surcharges of $15 to $40 are quoted before clippers ever touch fur."
+        }
+      }
+    },
+    {
+      "id": "kn-svc-pricing",
+      "parentId": "clinic-services",
+      "routable": false,
+      "title": "Use priceEstimate - payment options",
+      "props": {
+        "label": "Use priceEstimate - payment options"
+      },
+      "prompt": {
+        "slots": {
+          "constraints": "Price questions get real numbers from the priceEstimate tool, not from memory - fees change, and a stale quote helps no one. You may state the standard exam fee, $95, and frame everything else as an estimate range pending the doctor's assessment. Always offer to run priceEstimate for specific procedures, and present written estimates for anything over $300 - clients approve estimates before work begins, and we call before exceeding an approved estimate by more than ten percent. Payment support to mention proactively whenever cost worry appears: we take CareCredit financing with six-month interest-free terms on balances over $200, we direct-bill most major pet insurers - Trupanion, OVMA Pet Health, and others - so insured clients pay only their portion at checkout, and payment plans for established clients are possible at the practice manager's discretion for larger treatments. Never waive, discount, or promise to match a price - route those conversations to Dana, the practice manager, and never make a client feel judged for asking what something costs. Give ballpark ranges only when the tool provides them, and attach the words estimate and pending exam every time. When a client compares an online pharmacy price, stay neutral and offer the written prescription option rather than debating. Estimates hold for 30 days, itemized receipts print at checkout, and insurance claim forms are completed by us the same day at no charge."
+        }
+      }
+    },
+    {
+      "id": "kn-svc-cancellation",
+      "parentId": "clinic-services",
+      "routable": false,
+      "title": "Cancellation notice and no-show fees",
+      "props": {
+        "label": "Cancellation notice and no-show fees"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "We ask for 24 hours of notice to cancel or move an appointment - that slot goes to a pet on the same-day waitlist, which runs long most weeks. How to cancel: phone 555-0132, reply to the reminder text, or use the portal, any hour of the day; the timestamp counts even when we are closed. Late arrivals: more than ten minutes into a 15- or 30-minute slot and we may need to reschedule or convert to a drop-off so the day stays on time for everyone else - a quick call from the road usually lets us shuffle and keep you. Missed appointments without notice are recorded; after two no-shows, a $40 fee applies to each subsequent no-show, and surgical bookings require a deposit. Boarding and grooming have their own windows - 48 hours for grooming, 72 hours for holiday boarding, with holiday boarding deposits non-refundable inside that window. Genuine emergencies happen; tell us, and we will always be reasonable about it. The waitlist works in your favour too: joining costs nothing, we call in booking order starting at 8 a.m., and about half of waitlisted clients are seen within two business days. Confirmations go out 48 hours ahead by text; replying C confirms, replying R requests a move without a phone call. Chronic rescheduling is never punished when we hear from you inside the notice window."
+        }
+      }
+    },
+    {
+      "id": "kn-svc-newclients",
+      "parentId": "clinic-services",
+      "routable": false,
+      "title": "New client visits and records transfer",
+      "props": {
+        "label": "New client visits and records transfer"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "New clients are welcome and first visits are unhurried: 45 minutes with the doctor, a nose-to-tail exam, and a written care plan to take home. The first-visit exam is $95 with a $20 new-client discount applied, so $75, one per household. Before you come: complete the intake form online at our website - five minutes there saves ten in the lobby - and arrange records transfer, which takes one signed consent; we request records directly from your previous clinic, including vaccine history and lab work, so nothing is repeated unnecessarily. Bring any current medications in their original bottles, a stool sample if you can manage it (fresher than 12 hours, fridge-stored), and your pet a little hungry - treats do a lot of diplomatic work here. Nervous pets can come for free happy visits first: weigh in, collect treats, leave. Multi-pet households can spread first exams over several visits, and the discount still applies to the first. Parking and entrance details are on the website with photos. We register the household, not just the pet, so add every animal at intake even if only one visits now - species notes shape which room you get, and multi-pet discounts apply from day one. New-client slots exist every weekday, including late-afternoon blocks at 4:45, and Saturdays book two weeks out. Transferred records typically arrive within three business days, and we confirm by text when they land."
+        }
+      }
+    },
+    {
+      "id": "kn-svc-euthanasia",
+      "parentId": "clinic-services",
+      "routable": false,
+      "title": "Euthanasia and aftercare services",
+      "props": {
+        "label": "Euthanasia and aftercare services"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "When a family is facing the end of a pet's life, the practical details should be the easiest part of a hard day, and we treat them that way. Euthanasia appointments are 45 minutes in the comfort room - soft chairs, a blanket-covered couch, no clinical table unless it helps - booked at the end of the day so the lobby is empty and nobody feels rushed. Families choose everything: who stays and for which parts, a sedation-first approach so the pet is asleep in a lap before anything else happens, favourite treats throughout - even chocolate, on this day of all days - and as much time alone before and after as they need. Home euthanasia can be arranged through our house-call program most weekdays. Aftercare options, explained gently and once: communal cremation with no ashes returned, $95 for cats and small dogs and scaled by size; private cremation with ashes returned in a cedar box within two weeks, from $220; or home burial where bylaws allow, which we can advise on. Clay paw prints come with every euthanasia at no charge, and fur clippings on request. The account is settled beforehand or by emailed invoice so nobody stands at a counter afterwards. A quality-of-life consult, $95, is worth offering to any family who is unsure whether it is time - many leave with a plan and more good weeks than they expected."
+        }
+      }
+    },
+    {
+      "id": "kn-svc-housecalls",
+      "parentId": "clinic-services",
+      "routable": false,
+      "title": "House-call program details",
+      "props": {
+        "label": "House-call program details"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Our house-call program brings a doctor and a technician to homes within 15 km of the clinic on Wednesday and Friday afternoons, 1 to 5 p.m. The call fee is $120 on top of standard exam and service pricing, split when neighbours book back to back - our coordinator happily plays matchmaker on the same street. What travels well: wellness exams and vaccines, senior and hospice care, blood draws, nail trims for pets who panic in cars, new-litter checks, multi-pet households where three carriers make a circus, and quality-of-life assessments done in the place where the animal is most honest about how it is doing. What does not travel: anything needing X-rays, surgery, dental work, or hospitalization - and true emergencies, which always beat the van to the clinic, so never book a house call for a pet that should be in a hospital today. Book a week or two ahead through the front desk; the route is planned each Tuesday, and we confirm a two-hour arrival window by text that morning. Have the pet indoors before we arrive - the doorbell sends more cats under more beds than any other single step - along with a towel, a cleared table in good light, and any medications lined up for review. Payment is by card at the door, and the visit record syncs to the portal the same evening."
+        }
+      }
+    },
+    {
+      "id": "kn-svc-records",
+      "parentId": "clinic-services",
+      "routable": false,
+      "title": "Records requests and transfers",
+      "props": {
+        "label": "Records requests and transfers"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Your pet's records are yours, and getting them should never feel like a negotiation. What we release on request: full visit notes, vaccine certificates, lab results, imaging reports and the images themselves, and prescription history. How to ask: the portal's request button, an email to the front desk, or a signed form at the counter; phone requests work for simple items like vaccine certificates, but full-history transfers need something written. Only the listed owner or a documented agent may request records, and we verify identity before releasing anything - a divorce or a rehoming does not transfer access without paperwork. Timelines: vaccine certificates same day, routine transfers to another clinic within two business days, complete histories with imaging within five; urgent transfers for a pet hospitalized elsewhere jump every queue and move within the hour, any day we are open. There is no charge for sending records to another veterinary clinic or for portal access to your own file; printed complete histories over 20 pages carry a $10 handling fee, and radiograph copies on a disc are $15. We send records directly to the receiving clinic rather than through the client whenever possible - fewer lost attachments, faster continuity. Boarding facilities, trainers, groomers, and insurers get vaccine status only, never medical notes, unless the owner authorizes more in writing."
+        }
+      }
+    },
+    {
+      "id": "kn-prev-vaccines",
+      "parentId": "preventive-care",
+      "routable": false,
+      "title": "Core vaccine summary across species",
+      "props": {
+        "label": "Core vaccine summary across species"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Cross-species core summary, assuming a healthy animal starting as a baby. Dogs: DHPP at 8, 12, and 16 weeks, boosted at one year, then every three years; rabies at 16 weeks, one year, then every three years; bordetella annually for social dogs; leptospirosis annually in our area. Cats: FVRCP at 8, 12, and 16 weeks, one year, then every three years; rabies at 16 weeks then per product label; FeLV as a two-dose kitten series, continued annually for outdoor cats. Ferrets: distemper series at 8, 11, and 14 weeks then annually, and rabies annually - both with ferret-approved products. Rabbits: RHDV2, the rabbit hemorrhagic disease vaccine, annually - we recommend it for all rabbits including indoor-only ones, since the virus travels on shoes and hay. Birds and reptiles have no routine vaccines; their preventive care is annual exams and husbandry review. Adults with unknown history restart with two doses a month apart where a series applies. Overdue by more than the grace window usually means one extra booster, not a full restart. Book series visits at the first appointment - three visits four weeks apart planned once beats three scrambles. After any dose, normal is 24 hours of mild tiredness or a small tender bump; call the same day for facial swelling, hives, repeated vomiting, or collapse. We record every lot number, so reaction histories follow the pet and quietly shape next year's protocol."
+        }
+      }
+    },
+    {
+      "id": "kn-prev-parasites",
+      "parentId": "preventive-care",
+      "routable": false,
+      "title": "Cedar Grove parasite season calendar",
+      "props": {
+        "label": "Cedar Grove parasite season calendar"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Cedar Grove parasite calendar, drawn from our own practice data. Fleas: active outdoors April through November, but they winter happily in heated homes, so an infestation can absolutely start in January. Ticks: our longest season - questing begins any day above 4 C, so effectively March through December, with peaks in May and June and again in October; blacklegged ticks along the ravine trails carry Lyme, and we now pull ticks off dogs in every month of the year. Heartworm transmission: June through November. Intestinal worms: year-round, which is why puppies and kittens are dewormed every two weeks until twelve weeks of age and stool tests run annually, twice yearly for hunting dogs and outdoor cats. Our standing recommendation is twelve-month coverage with a combination product matched to species and lifestyle rather than seasonal stop-start dosing - gaps are where infections happen, and warm autumns keep stretching every season on this list. Lost track of doses? Bring the box or your portal history and we will rebuild the schedule. Tick checks take one minute in the order ticks choose: ears and ear base, chin, armpits, groin, between the toes, and under the collar. Remove with steady straight traction at the head using a tick tool, drop the tick in rubbing alcohol in a labelled jar with the date, and bring it in - species identification changes the advice we give next."
+        }
+      }
+    },
+    {
+      "id": "kn-prev-dental",
+      "parentId": "preventive-care",
+      "routable": false,
+      "title": "COHAT cleanings and February discount",
+      "props": {
+        "label": "COHAT cleanings and February discount"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "By age three, most dogs and cats have dental disease under the gumline where brushing cannot reach it. Our answer is the COHAT - Comprehensive Oral Health Assessment and Treatment - which is a cleaning done properly: full anesthesia, dental X-rays of every root, ultrasonic scaling above and below the gumline, polishing, and a tooth-by-tooth chart, with extractions only after the doctor calls you with findings and a revised estimate. Anesthesia-free cleanings sold elsewhere scrape the visible crown and miss the actual disease, and we will say so plainly when asked. Typical range including anesthesia and X-rays: cats $420 to $780, dogs $480 to $950, more when extractions are needed; pre-anesthetic bloodwork is required and priced by age tier. February is dental month - 10 percent off all COHATs, and it books out by mid-January. Home care that actually works: daily brushing with pet toothpaste, VOHC-accepted chews, and starting the habit young; the smell of the breath is your early warning system. The at-home progression that works: a finger wrapped in gauze with pet toothpaste - never human paste, since swallowed fluoride and xylitol are dangerous - for two weeks, then a finger brush, then a soft brush, 30 seconds per side nightly. Poultry-flavoured paste wins most taste tests by a wide margin. Book February COHATs in December; the discount calendar genuinely fills by mid-January."
+        }
+      }
+    },
+    {
+      "id": "kn-prev-bloodwork",
+      "parentId": "preventive-care",
+      "routable": false,
+      "title": "Junior, adult, senior panel tiers",
+      "props": {
+        "label": "Junior, adult, senior panel tiers"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Wellness bloodwork comes in three tiers matched to life stage. Junior panel, $95: CBC and core chemistry - a baseline for young animals and the pre-anesthetic screen for spays and neuters; normal results become the yardstick every later test is measured against. Adult panel, $145, recommended annually from age three: adds a full chemistry with electrolytes and a urinalysis, catching early kidney and liver drift while it is still just a number on a page. Senior panel, $210, discussed twice-yearly from age seven in dogs and ten in cats: everything above plus thyroid testing and blood pressure - the combination that finds hyperthyroid cats, hypothyroid dogs, and early kidney disease before weight loss starts. Results arrive within 24 hours through the portal with a note from the doctor, and abnormal results always get a phone call, never just a message. Fasting helps accuracy: water is fine, food off for eight hours when practical - we tell you at booking whether your pet's panel needs it. A note on trends: a creatinine that climbs from 90 to 130 over two years is a message even though both numbers sit inside the normal range - which is exactly why annual panels run on the same analyzer beat one-off tests done anywhere convenient. We bank baseline results for every patient and graph them in the portal, so you can watch the flat lines with us and celebrate how boring they are."
+        }
+      }
+    },
+    {
+      "id": "kn-prev-nutrition",
+      "parentId": "preventive-care",
+      "routable": false,
+      "title": "Body condition scoring and weight clinics",
+      "props": {
+        "label": "Body condition scoring and weight clinics"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "We score every patient on the nine-point body condition scale at every visit: 1 is emaciated, 9 is obese, and the target for nearly every dog and cat is 4 to 5 - ribs easy to feel under a light fat layer, a visible waist from above, a belly tuck from the side. Owners consistently rate their pets a point or two leaner than we do, which is why the hands-on check matters. More than half the pets we see are overweight, and the health cost is concrete: earlier arthritis, diabetes in cats, and a lifespan shorter by up to two years in the studies we cite. The fix is measurement, not a miracle diet: an actual measuring cup, meals instead of free-feeding, treats capped at ten percent of daily calories, and a weigh-in every month. Our weight clinics are free: a technician weighs, scores, adjusts the plan, and cheers you on, every two to four weeks, with no doctor fee. Ask for a starting calorie target at any visit. Calorie mathematics beats brand debates: an indoor neutered 4.5 kg cat maintains on roughly 200 kcal a day - about 55 grams of most dry foods - and one extra 10 kcal treat daily adds close to half a kilogram of fat in a year. Weigh food once with a kitchen scale to calibrate your cup; most scoops run 20 percent heavy without anyone noticing."
+        }
+      }
+    },
+    {
+      "id": "kn-prev-microchip",
+      "parentId": "preventive-care",
+      "routable": false,
+      "title": "Microchip price includes lifetime registration",
+      "props": {
+        "label": "Microchip price includes lifetime registration"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "A microchip is $55 at our clinic, and that price includes lifetime registration in the national database - no annual fees, ever. The chip is a rice-grain transponder placed under the skin between the shoulder blades with a needle, quick enough that most pets notice it less than a vaccine; many owners add it during a spay or neuter while their pet is already anesthetized. It is not a GPS - it is a permanent ID number read by a scanner at any clinic or shelter, and it works only if the registration stays current, so update your phone number in the database when you move; we help with transfers free of charge, five minutes at the desk. We scan every new patient and every found animal at every visit, and we confirm the number on file matches the registry once a year during wellness exams. Collar tags still matter - a neighbour reads a tag instantly, no scanner required. Chips reunite pets years and provinces away from home. Chip checks matter because chips can migrate under the skin - a scanner sweep at any visit takes ten seconds and we do it without being asked. If you adopt a pet with an unknown chip, bring it in: we can look up the registry from the number and help transfer ownership with the shelter paperwork in hand. Registry update forms take five minutes at the desk, and we keep a printed copy in the file."
+        }
+      }
+    },
+    {
+      "id": "kn-prev-plans",
+      "parentId": "preventive-care",
+      "routable": false,
+      "title": "Puppy and Kitten Start plans",
+      "props": {
+        "label": "Puppy and Kitten Start plans"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Our Puppy Start and Kitten Start plans spread the expensive first year into $59 a month for 12 months. Included: all core vaccine series and boosters, unlimited exams during the plan year (including the is-this-normal visits every new owner needs), stool tests and deworming on schedule, the spay or neuter with pre-anesthetic bloodwork, a microchip with registration, and 10 percent off anything else during the plan year, food included. Priced separately, the first year typically runs $1,100 to $1,400, so the plan saves most households several hundred dollars and removes surprise bills. Enrollment is open until 20 weeks of age; the plan follows the pet rather than the calendar, and payments continue monthly even if services are used early - it is a payment plan, not insurance, and it pairs well with actual accident-and-illness insurance, which we can quote alongside it. Adult and senior plans arrive this fall; join the interest list at the front desk. The fine print in plain words: plans renew only by choice, there is no cancellation penalty after month six, and unused services do not roll over - the plan year ends on the enrollment anniversary. Moving away mid-year? We prorate honestly and transfer records free. Households enrolling two or more babies in the same year get the second plan at $49 a month. Ask Dana for the one-page comparison against paying per visit."
+        }
+      }
+    },
+    {
+      "id": "kn-prev-titers",
+      "parentId": "preventive-care",
+      "routable": false,
+      "title": "Titer testing as an option",
+      "props": {
+        "label": "Titer testing as an option"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Titer testing measures the antibody level a previous vaccine left behind, and it is a legitimate option we offer rather than a fringe request we tolerate. What it does well: a distemper-parvo titer in dogs and a panleukopenia titer in cats predict protection reliably, so an adult dog with a strong titer can skip that year's DHPP booster with the doctor's sign-off, and titers guide us after a past vaccine reaction, in seniors with complicated medical histories, and for rescues with no records at all - a positive titer can replace restarting an entire series. What it cannot do: rabies titers do not replace the rabies vaccine, which Ontario law requires regardless of any blood result; and leptospirosis and bordetella immunity fade too quickly for titers to be useful, so those stay annual on their own merits. Logistics: a small blood draw, $130 for the in-house distemper-parvo panel with results in about 30 minutes, or send-out panels around $190 with a week's wait. Facilities vary on whether they accept titers in place of boosters, so check before relying on one - our own kennel accepts DHPP titers with a doctor's letter but still requires bordetella. Once a pet goes this route we suggest titering every one to three years. It is not cheaper than vaccinating; it is more information, and some families value exactly that."
+        }
+      }
+    },
+    {
+      "id": "kn-prev-senior-screen",
+      "parentId": "preventive-care",
+      "routable": false,
+      "title": "Senior screening bundle tiers",
+      "props": {
+        "label": "Senior screening bundle tiers"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "Our senior screening bundles package the tests that catch age-related disease early, priced below the sum of their parts. Silver bundle, $265: the senior blood panel with thyroid, urinalysis, blood pressure, and a technician weight-and-mobility check - the right default for a first-time senior at seven for dogs and ten for cats. Gold bundle, $395: everything above plus chest and abdominal X-rays read the same day and an eye pressure check for glaucoma-prone breeds; we steer families here for pets over ten, for coughing seniors, and for any breed on the cardiac watch list - cavaliers, boxers, Dobermans, Maine coons. Both bundles book as morning drop-offs with results by phone that evening and a written plan in the portal. What the bundles catch in practice, from our own last two years: early kidney drift in one of every six senior cats screened, thyroid disease in one in eight, heart murmurs the owner never suspected, and the occasional silent abdominal mass while it is still operable. Twice-yearly screening from these ages onward is the schedule the doctors recommend, because six months in a senior pet is roughly three human years. Bundle results are graphed against the pet's own baselines, which is where slow trends first show themselves. Insurance often reimburses screening under wellness riders, and we complete those forms the same day."
+        }
+      }
+    },
+    {
+      "id": "kn-prev-weight-clinic",
+      "parentId": "preventive-care",
+      "routable": false,
+      "title": "Weight clinic program details",
+      "props": {
+        "label": "Weight clinic program details"
+      },
+      "prompt": {
+        "slots": {
+          "knowledge": "The weight clinic is a free standing program, not a lecture. How it works: any client can enroll at any visit or by phone; a technician takes a starting weight, body condition score, and photos, sets a target with the doctor - typically one to two percent of body weight lost per month, slower for cats, whose livers punish crash diets dangerously - and writes a starting calorie number with an exact gram amount per meal for the food already in your cupboard. Check-ins run every two to four weeks, ten minutes, no charge, walk-in on weekday mornings: weigh, adjust, encourage. What we add along the way: measured treat swaps - green beans and carrot coins for dogs, a portion of the daily kibble hand-fed as treats for cats - food-puzzle loans from our lending shelf, leash-walk progressions for arthritic dogs cleared by the doctor, and for cats a play prescription of two ten-minute wand sessions daily. Plateaus are normal at the three-month mark; that is when we recheck the math, screen thyroid where indicated, and sometimes move to a prescription weight food, which outperforms simply feeding less of a maintenance diet because protein and nutrients stay up while calories drop. Graduates - and most enrollees do graduate - keep quarterly weigh-in privileges for life, because regain is quiet and quick."
+        }
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "kn-emerg-toxins",
+      "to": "kn-meds-nsaid",
+      "kind": "seeAlso"
+    },
+    {
+      "from": "kn-dogs-heartworm",
+      "to": "kn-prev-parasites",
+      "kind": "seeAlso"
+    },
+    {
+      "from": "kn-svc-boarding",
+      "to": "kn-prev-vaccines",
+      "kind": "seeAlso"
+    },
+    {
+      "from": "kn-cats-urinary",
+      "to": "kn-emerg-redflags",
+      "kind": "seeAlso"
+    },
+    {
+      "from": "kn-cats-vomiting",
+      "to": "kn-emerg-string",
+      "kind": "seeAlso"
+    },
+    {
+      "from": "kn-prev-senior-screen",
+      "to": "kn-meds-insulin",
+      "kind": "seeAlso"
+    },
+    {
+      "from": "kn-dogs-dental-risks",
+      "to": "kn-prev-dental",
+      "kind": "seeAlso"
+    }
+  ],
+  "meta": {
+    "regression": [
+      {
+        "query": "labrador puppy feeding",
+        "expected": "dogs"
+      },
+      {
+        "query": "cat hairballs",
+        "expected": "cats"
+      },
+      {
+        "query": "parrot fluffed",
+        "expected": "birds"
+      },
+      {
+        "query": "bearded dragon UVB",
+        "expected": "reptiles-exotics"
+      },
+      {
+        "query": "guinea pig hay",
+        "expected": "small-mammals"
+      },
+      {
+        "query": "dog ate dark chocolate",
+        "expected": "emergencies-toxins"
+      },
+      {
+        "query": "dog ibuprofen",
+        "expected": "medications-pharmacy"
+      },
+      {
+        "query": "boarding next weekend",
+        "expected": "clinic-services"
+      },
+      {
+        "query": "kitten vaccine round",
+        "expected": "preventive-care"
+      },
+      {
+        "query": "wellness checkup cost",
+        "expected": "clinic-services"
+      }
+    ]
+  }
+}

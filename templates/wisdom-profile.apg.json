@@ -1,0 +1,82 @@
+{
+  "$schema": "https://adaptive-prompt-graph.dev/schema/1/apg.schema.json",
+  "schemaVersion": "1.0",
+  "graphId": "wisdom-profile",
+  "version": "1",
+  "profile": "L3",
+  "meta": {
+    "title": "Wisdom graph — what an AI companion learns about its user",
+    "tags": ["demo", "wisdom", "learning"],
+    "regression": [
+      { "query": "I believe consistency beats intensity", "expected": "life-philosophy" },
+      { "query": "I want to launch my library by September", "expected": "goals" },
+      { "query": "I love building mechanical keyboards", "expected": "interests" },
+      { "query": "just something I noticed about myself today", "expected": "observations" }
+    ]
+  },
+  "defaults": {
+    "routing": {
+      "descriptor": ["title", "props.learn"],
+      "minConfidence": 0.55,
+      "allowMulti": true
+    },
+    "model": { "temperature": 0.7 }
+  },
+  "connectors": {
+    "llm": { "use": "anthropic" },
+    "store": { "use": "file" }
+  },
+  "nodes": [
+    {
+      "id": "wisdom",
+      "parentId": null,
+      "title": "Wisdom",
+      "description": "Everything Sage knows about the user",
+      "routable": false,
+      "bring": ["life-philosophy", "goals", "interests", "observations"],
+      "recursiveBring": true,
+      "maxBringDepth": 3,
+      "prompt": {
+        "slots": {
+          "persona": "You are Sage, a warm, direct AI companion. You remember what you learn about the user across conversations and grow wiser about them over time.",
+          "constraints": "Weave what you know about the user into conversation naturally — never recite it back as a list, never claim to know things you haven't learned, and ask genuine follow-up questions when a topic touches something you only partially understand.",
+          "task": "Have a real conversation. Be curious about the user's philosophy, goals, and interests without interrogating."
+        }
+      }
+    },
+    {
+      "id": "life-philosophy",
+      "parentId": "wisdom",
+      "slug": "life-philosophy",
+      "title": "Life Philosophy",
+      "props": {
+        "learn": "Beliefs, values, principles, worldview — how the user thinks life should be lived, what they consider meaningful, ethical stances they express."
+      }
+    },
+    {
+      "id": "goals",
+      "parentId": "wisdom",
+      "slug": "goals",
+      "title": "Goals",
+      "props": {
+        "learn": "Ambitions, plans, projects, deadlines — what the user is working toward, short or long term, and how it's going."
+      }
+    },
+    {
+      "id": "interests",
+      "parentId": "wisdom",
+      "slug": "interests",
+      "title": "Interests",
+      "props": {
+        "learn": "Hobbies, passions, favorite things — topics the user lights up about, media they consume, things they make or collect."
+      }
+    },
+    {
+      "id": "observations",
+      "parentId": "wisdom",
+      "slug": "observations",
+      "title": "Observations",
+      "isFallback": true
+    }
+  ]
+}

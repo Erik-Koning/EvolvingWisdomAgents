@@ -1,0 +1,278 @@
+/* ⚖ Compare page styles — extends globals.css (vars + .panel/.msg/.badge/.toggle
+   conventions); kept in its own file so the benchmark is additive. */
+
+.badge.mode-graph {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--accent);
+  font-weight: 600;
+}
+.badge.mode-monolith {
+  background: color-mix(in srgb, var(--text-secondary) 14%, transparent);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.check-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 8px 0;
+}
+.check-row input {
+  accent-color: var(--accent);
+}
+
+.arms-card {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 10px 0;
+}
+.arm {
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 13px;
+}
+.arm h4 {
+  margin: 0 0 4px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+.arm .big {
+  font-size: 18px;
+  font-weight: 650;
+  color: var(--text-primary);
+}
+.arm .sub-line {
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.fairness {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 8px 0 12px;
+}
+
+.metric-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin: 10px 0;
+}
+.metric-table th,
+.metric-table td {
+  text-align: right;
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--hairline);
+  color: var(--text-secondary);
+}
+.metric-table th:first-child,
+.metric-table td:first-child {
+  text-align: left;
+  color: var(--text-muted);
+}
+.metric-table thead th {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.metric-table td.best {
+  color: var(--good);
+  font-weight: 650;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 220px;
+  overflow-y: auto;
+  margin-top: 8px;
+}
+.history-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-secondary);
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--surface-1) 60%, transparent);
+}
+.history-row .q {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-primary);
+}
+
+.prompt-details {
+  margin-top: 6px;
+  font-size: 12px;
+}
+.prompt-details summary {
+  cursor: pointer;
+  color: var(--text-muted);
+}
+.prompt-details pre {
+  max-height: 320px;
+  overflow: auto;
+  background: color-mix(in srgb, var(--surface-1) 70%, transparent);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  padding: 10px;
+  white-space: pre-wrap;
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.time-bar {
+  display: flex;
+  height: 6px;
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 6px 0 2px;
+  background: var(--hairline);
+}
+.time-bar .seg-route {
+  background: var(--series-2);
+}
+.time-bar .seg-compose {
+  background: var(--series-3);
+}
+.time-bar .seg-generate {
+  background: var(--series-1);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0;
+}
+.chip {
+  border: 1px solid var(--hairline);
+  background: color-mix(in srgb, var(--surface-1) 70%, transparent);
+  color: var(--text-secondary);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 12.5px;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 120ms ease, color 120ms ease;
+}
+.chip:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+.chip:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+.samples-details {
+  margin: 4px 0 8px;
+}
+
+.benchmark-btn {
+  width: 100%;
+  border: 1px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 4px 0 8px;
+}
+.benchmark-btn:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.benchmark-progress {
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  margin: 4px 0 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.projection-card {
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin: 10px 0;
+}
+.projection-card h4 {
+  margin: 0 0 6px;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+.projection-card input[type="range"] {
+  width: 100%;
+  accent-color: var(--accent);
+}
+.projection-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+.savings-line {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--good);
+}
+
+.compare-card {
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  padding: 10px;
+  margin-top: 8px;
+}
+.compare-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.compare-col {
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 13px;
+}
+.compare-col.active {
+  border-color: var(--accent);
+}
+.compare-col .col-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+.compare-col .col-reply {
+  color: var(--text-secondary);
+  max-height: 180px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.delta-line {
+  margin-top: 8px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--accent);
+}

@@ -1,0 +1,59 @@
+{
+  "$comment": "Capability profiles L0-L5. Each tier is a strict superset of the previous. The validator rejects a graph whose declared profile is below the features it uses. `features` names schema surfaces gated at that tier.",
+  "profiles": {
+    "L0": {
+      "name": "Prompt switcher",
+      "features": ["nodes.category", "prompt.string", "routing", "composition.path"]
+    },
+    "L1": {
+      "name": "Personalization / knowledge graph",
+      "inherits": "L0",
+      "features": ["prompt.slots", "bring", "recursiveBring", "routable.false", "variables", "connectors.memory", "queryRewrite", "props", "routing.descriptor"]
+    },
+    "L2": {
+      "name": "Elicitation & intake",
+      "inherits": "L1",
+      "features": ["collect", "fillPolicy", "guard", "visitPolicy", "entryCondition", "exitCondition", "skipCondition", "outputSchema"]
+    },
+    "L3": {
+      "name": "Flows & actions",
+      "inherits": "L2",
+      "features": ["nodes.decision", "nodes.action", "nodes.answer", "session.walking", "toolAllowlist", "fallbackNodeId", "isFallback"]
+    },
+    "L4": {
+      "name": "Oversight & handoff",
+      "inherits": "L3",
+      "features": ["escalation", "connectors.handoff"]
+    },
+    "L5": {
+      "name": "Self-mutation",
+      "inherits": "L4",
+      "features": ["mutation.tools", "changesets", "layers"]
+    }
+  },
+  "featureGates": {
+    "$comment": "feature key -> minimum profile. Used by the validator's profile-conformance check.",
+    "prompt.slots": "L1",
+    "bring": "L1",
+    "routable.false": "L1",
+    "variables": "L1",
+    "props": "L1",
+    "routing.descriptor": "L1",
+    "queryRewrite": "L1",
+    "collect": "L2",
+    "guard": "L2",
+    "entryCondition": "L2",
+    "exitCondition": "L2",
+    "skipCondition": "L2",
+    "visitPolicy": "L2",
+    "fillPolicy": "L2",
+    "outputSchema": "L2",
+    "nodes.decision": "L3",
+    "nodes.action": "L3",
+    "nodes.answer": "L3",
+    "toolAllowlist": "L3",
+    "fallbackNodeId": "L3",
+    "isFallback": "L3",
+    "escalation": "L4"
+  }
+}

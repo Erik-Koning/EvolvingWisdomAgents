@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0",
+  "description": "A referenced required variable that resolves nowhere is a compose-time error naming variable and node",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "vars",
+    "profile": "L1",
+    "variables": [
+      {
+        "name": "brandName",
+        "required": true
+      }
+    ],
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "R",
+        "description": "r",
+        "prompt": "You work for {{brandName}}."
+      }
+    ]
+  },
+  "op": {
+    "kind": "compose",
+    "nodeId": "root"
+  },
+  "expectError": "Missing required variable \"brandName\" at node \"root\""
+}

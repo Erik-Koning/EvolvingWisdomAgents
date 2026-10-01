@@ -1,0 +1,59 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Dangling parent, dangling bring ref, and answer-without-prompt are errors",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "bad",
+    "profile": "L3",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "R",
+        "description": "r"
+      },
+      {
+        "id": "x",
+        "parentId": "nope",
+        "title": "X",
+        "description": "x"
+      },
+      {
+        "id": "y",
+        "parentId": "root",
+        "title": "Y",
+        "description": "y",
+        "bring": [
+          "ghost"
+        ]
+      },
+      {
+        "id": "z",
+        "parentId": "root",
+        "type": "answer",
+        "title": "Z",
+        "description": "z"
+      }
+    ]
+  },
+  "op": {
+    "kind": "validate"
+  },
+  "expected": {
+    "valid": false,
+    "errors": [
+      {
+        "code": "DANGLING_PARENT",
+        "nodeId": "x"
+      },
+      {
+        "code": "DANGLING_REF",
+        "nodeId": "y"
+      },
+      {
+        "code": "ANSWER_WITHOUT_PROMPT",
+        "nodeId": "z"
+      }
+    ]
+  }
+}

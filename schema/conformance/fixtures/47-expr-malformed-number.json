@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Number literals allow at most one dot; malformed literals are parse errors in both runtimes (never a silent NaN)",
+  "op": {
+    "kind": "evalExpr",
+    "expr": "x == 1.2.3",
+    "vars": {
+      "x": 1
+    }
+  },
+  "expectError": "Malformed number literal"
+}

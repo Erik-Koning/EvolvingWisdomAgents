@@ -1,0 +1,86 @@
+{
+  "$schema": "https://adaptive-prompt-graph.dev/schema/1/apg.schema.json",
+  "schemaVersion": "1.0",
+  "graphId": "brand-personalization",
+  "version": "1",
+  "profile": "L1",
+  "meta": { "title": "Brand personalization / knowledge graph", "tags": ["demo", "l1"] },
+  "defaults": {
+    "composition": { "defaultMode": "append", "mode": { "persona": "override" } },
+    "budget": { "maxPromptTokens": 4000 }
+  },
+  "connectors": {
+    "llm": { "use": "anthropic" },
+    "memory": { "use": "none" }
+  },
+  "variables": [
+    { "name": "brandName", "required": true, "source": "tenant" },
+    { "name": "customerName", "required": false, "source": "memory" }
+  ],
+  "nodes": [
+    {
+      "id": "root",
+      "parentId": null,
+      "title": "Concierge",
+      "description": "Customer concierge for {{brandName}}",
+      "prompt": {
+        "slots": {
+          "persona": "You are the {{brandName}} concierge. Address the customer as {{customerName}} when known.",
+          "constraints": "Never invent policy. If a policy is not in your knowledge, say so."
+        }
+      },
+      "bring": ["tone-guide"]
+    },
+    {
+      "id": "tone-guide",
+      "parentId": "root",
+      "slug": "tone-guide",
+      "title": "Tone guide",
+      "description": "Single-source brand voice",
+      "routable": false,
+      "prompt": {
+        "slots": {
+          "knowledge": "Voice: warm, concise, no exclamation marks. Sign-offs are never automated-sounding."
+        }
+      }
+    },
+    {
+      "id": "returns-policy",
+      "parentId": "root",
+      "slug": "returns-policy",
+      "title": "Returns policy",
+      "description": "Canonical returns policy text",
+      "routable": false,
+      "prompt": {
+        "slots": {
+          "knowledge": "Returns are accepted within 30 days with receipt. Refunds land in 5–7 business days."
+        }
+      }
+    },
+    {
+      "id": "orders",
+      "parentId": "root",
+      "slug": "orders",
+      "title": "Orders",
+      "description": "Order status, changes, cancellations",
+      "aliases": ["where is my order", "cancel order"],
+      "prompt": "Resolve the order question. Offer proactive next steps.",
+      "bring": ["returns-policy"]
+    },
+    {
+      "id": "returns",
+      "parentId": "root",
+      "slug": "returns",
+      "title": "Returns & refunds",
+      "description": "Returning items, refund timelines",
+      "aliases": ["refund", "send back"],
+      "prompt": {
+        "slots": {
+          "task": "Walk the customer through the return, citing the policy verbatim where relevant.",
+          "queryRewrite": "Rewrite for retrieval, expanding brand shorthand: {{query}}"
+        }
+      },
+      "bring": ["returns-policy"]
+    }
+  ]
+}

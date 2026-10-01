@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "1.0",
+  "description": "A category node's exitCondition gates the exit to composition (loopUntilValid intake)",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "gate",
+    "profile": "L2",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "R",
+        "description": "r"
+      },
+      {
+        "id": "quote",
+        "parentId": "root",
+        "title": "Quote",
+        "description": "quote intake",
+        "visitPolicy": "loopUntilValid",
+        "exitCondition": "has(email)",
+        "prompt": "Prepare the quote."
+      }
+    ]
+  },
+  "op": {
+    "kind": "sessionStep",
+    "input": {
+      "kind": "enter",
+      "nodeId": "quote"
+    }
+  },
+  "expected": {
+    "session": {
+      "mode": "walking",
+      "currentNodeId": "quote"
+    },
+    "effects": [
+      {
+        "kind": "elicit",
+        "nodeId": "quote",
+        "variable": "has(email)",
+        "prompt": "Exit condition not met: has(email)"
+      }
+    ]
+  }
+}

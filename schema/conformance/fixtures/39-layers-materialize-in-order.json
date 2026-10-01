@@ -1,0 +1,104 @@
+{
+  "schemaVersion": "1.0",
+  "description": "base ⊕ tenant ⊕ user materialize in scope order; later layers may reference earlier layers' nodes",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "travel-demo",
+    "profile": "L1",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "Assistant",
+        "description": "General assistant",
+        "prompt": "You are a helpful assistant."
+      },
+      {
+        "id": "travel",
+        "parentId": "root",
+        "title": "Travel",
+        "description": "Trips and itineraries",
+        "prompt": "Ask one clarifying question before recommending."
+      },
+      {
+        "id": "visa",
+        "parentId": "travel",
+        "title": "Visas",
+        "description": "Entry requirements"
+      },
+      {
+        "id": "code",
+        "parentId": "root",
+        "title": "Coding",
+        "description": "Programming questions",
+        "prompt": "Answer with runnable code first."
+      }
+    ],
+    "version": "1"
+  },
+  "op": {
+    "kind": "materializeLayers",
+    "layers": [
+      {
+        "layerId": "tenant:acme",
+        "baseGraphId": "travel-demo",
+        "baseVersion": "1",
+        "scope": "tenant",
+        "ownerId": "acme",
+        "version": "t1",
+        "ops": [
+          {
+            "op": "addNode",
+            "parentId": "root",
+            "node": {
+              "id": "acme-faq",
+              "parentId": "root",
+              "title": "Acme FAQ",
+              "description": "Acme-specific answers"
+            }
+          }
+        ]
+      },
+      {
+        "layerId": "user:erik",
+        "baseGraphId": "travel-demo",
+        "baseVersion": "1",
+        "scope": "user",
+        "ownerId": "erik",
+        "version": "u1",
+        "ops": [
+          {
+            "op": "updateNode",
+            "id": "acme-faq",
+            "patch": {
+              "description": "Acme answers, en français"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "expected": {
+    "conflicts": [],
+    "graph": {
+      "nodes": [
+        {
+          "id": "root"
+        },
+        {
+          "id": "travel"
+        },
+        {
+          "id": "visa"
+        },
+        {
+          "id": "code"
+        },
+        {
+          "id": "acme-faq",
+          "description": "Acme answers, en français"
+        }
+      ]
+    }
+  }
+}

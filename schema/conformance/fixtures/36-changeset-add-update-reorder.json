@@ -1,0 +1,108 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Atomic changeset: addNode at position, updateNode deep-merge with null-deletes, reorderChildren; deterministic version bump",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "travel-demo",
+    "profile": "L1",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "Assistant",
+        "description": "General assistant",
+        "prompt": "You are a helpful assistant."
+      },
+      {
+        "id": "travel",
+        "parentId": "root",
+        "title": "Travel",
+        "description": "Trips and itineraries",
+        "prompt": "Ask one clarifying question before recommending."
+      },
+      {
+        "id": "visa",
+        "parentId": "travel",
+        "title": "Visas",
+        "description": "Entry requirements"
+      },
+      {
+        "id": "code",
+        "parentId": "root",
+        "title": "Coding",
+        "description": "Programming questions",
+        "prompt": "Answer with runnable code first."
+      }
+    ]
+  },
+  "op": {
+    "kind": "applyChangeset",
+    "ops": [
+      {
+        "op": "addNode",
+        "parentId": "root",
+        "node": {
+          "id": "food",
+          "parentId": "root",
+          "title": "Food",
+          "description": "Restaurants",
+          "prompt": "Recommend restaurants."
+        },
+        "position": 0
+      },
+      {
+        "op": "updateNode",
+        "id": "travel",
+        "patch": {
+          "description": "Trips, visas, and itineraries",
+          "props": {
+            "region": "global"
+          },
+          "prompt": null
+        }
+      },
+      {
+        "op": "reorderChildren",
+        "parentId": "root",
+        "order": [
+          "travel",
+          "code",
+          "food"
+        ]
+      }
+    ]
+  },
+  "expected": {
+    "graph": {
+      "version": "0-1",
+      "nodes": [
+        {
+          "id": "root"
+        },
+        {
+          "id": "travel",
+          "description": "Trips, visas, and itineraries",
+          "props": {
+            "region": "global"
+          },
+          "prompt": null
+        },
+        {
+          "id": "visa"
+        },
+        {
+          "id": "code"
+        },
+        {
+          "id": "food",
+          "type": "category",
+          "prompt": {
+            "slots": {
+              "task": "Recommend restaurants."
+            }
+          }
+        }
+      ]
+    }
+  }
+}

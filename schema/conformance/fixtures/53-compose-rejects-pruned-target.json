@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Composing a pruned primary target is a clean error, not a silent stale composition",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "pruned",
+    "profile": "L1",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "R",
+        "description": "r"
+      },
+      {
+        "id": "p",
+        "parentId": "root",
+        "title": "P",
+        "description": "p",
+        "prompt": "Old.",
+        "metadata": {
+          "status": "pruned"
+        }
+      }
+    ]
+  },
+  "op": {
+    "kind": "compose",
+    "nodeId": "p"
+  },
+  "expectError": "Node \"p\" is pruned"
+}

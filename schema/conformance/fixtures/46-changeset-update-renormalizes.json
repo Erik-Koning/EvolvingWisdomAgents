@@ -1,0 +1,83 @@
+{
+  "schemaVersion": "1.0",
+  "description": "updateNode patches re-normalize: string prompts desugar and patched bring gets its defaults (no non-canonical data in stored graphs)",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "travel-demo",
+    "profile": "L1",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "Assistant",
+        "description": "General assistant",
+        "prompt": "You are a helpful assistant."
+      },
+      {
+        "id": "travel",
+        "parentId": "root",
+        "title": "Travel",
+        "description": "Trips and itineraries",
+        "prompt": "Ask one clarifying question before recommending."
+      },
+      {
+        "id": "visa",
+        "parentId": "travel",
+        "title": "Visas",
+        "description": "Entry requirements"
+      },
+      {
+        "id": "code",
+        "parentId": "root",
+        "title": "Coding",
+        "description": "Programming questions",
+        "prompt": "Answer with runnable code first."
+      }
+    ]
+  },
+  "op": {
+    "kind": "applyChangeset",
+    "ops": [
+      {
+        "op": "updateNode",
+        "id": "travel",
+        "patch": {
+          "prompt": "New travel task.",
+          "bring": [
+            "visa"
+          ]
+        }
+      }
+    ]
+  },
+  "expected": {
+    "graph": {
+      "version": "0-1",
+      "nodes": [
+        {
+          "id": "root"
+        },
+        {
+          "id": "travel",
+          "prompt": {
+            "slots": {
+              "task": "New travel task."
+            }
+          },
+          "bring": [
+            "visa"
+          ],
+          "recursiveBring": false,
+          "bringMode": "contextOnly",
+          "maxBringDepth": 3
+        },
+        {
+          "id": "visa"
+        },
+        {
+          "id": "code"
+        }
+      ]
+    }
+  }
+}

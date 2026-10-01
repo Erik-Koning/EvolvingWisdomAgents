@@ -1,0 +1,78 @@
+{
+  "schemaVersion": "1.0",
+  "description": "Nodes whose entryCondition fails under session vars drop from the outline and cannot match",
+  "graph": {
+    "schemaVersion": "1.0",
+    "graphId": "travel-demo",
+    "profile": "L2",
+    "nodes": [
+      {
+        "id": "root",
+        "parentId": null,
+        "title": "Assistant",
+        "description": "General assistant",
+        "prompt": "You are a helpful assistant."
+      },
+      {
+        "id": "travel",
+        "parentId": "root",
+        "title": "Travel",
+        "description": "Trips and itineraries",
+        "prompt": "Ask one clarifying question before recommending."
+      },
+      {
+        "id": "visa",
+        "parentId": "travel",
+        "title": "Visas",
+        "description": "Entry requirements"
+      },
+      {
+        "id": "code",
+        "parentId": "root",
+        "title": "Coding",
+        "description": "Programming questions",
+        "prompt": "Answer with runnable code first."
+      },
+      {
+        "id": "vip",
+        "parentId": "root",
+        "title": "VIP desk",
+        "description": "Gold-tier concierge",
+        "entryCondition": "tier == 'gold'"
+      }
+    ]
+  },
+  "mocks": {
+    "classify": [
+      {
+        "matches": [
+          {
+            "nodeId": "vip",
+            "confidence": 0.9
+          },
+          {
+            "nodeId": "travel",
+            "confidence": 0.6
+          }
+        ]
+      }
+    ]
+  },
+  "op": {
+    "kind": "route",
+    "query": "book me the lounge",
+    "sessionVars": {
+      "tier": "silver"
+    }
+  },
+  "expected": {
+    "matches": [
+      {
+        "nodeId": "travel",
+        "confidence": 0.6
+      }
+    ],
+    "strategy": "single",
+    "fallbackUsed": false
+  }
+}
